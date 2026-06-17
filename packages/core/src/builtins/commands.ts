@@ -31,52 +31,47 @@ interface DeletePayload {
 /** `<type>.create` — construit depuis defaultValues() + overrides, puis ajoute. */
 export function createCommand(type: BuiltinObjectType): CommandFactory {
   const trackKey = TRACK_OF_TYPE[type];
-  return (payload): ReturnType<typeof snapshotCommand> => {
-    const p = (payload ?? {}) as CreatePayload;
-    return snapshotCommand(`${type}.create`, (ctx) => {
+  return (payload) =>
+    snapshotCommand(`${type}.create`, (ctx) => {
       const def = ctx.objects.get(type);
       if (!def) throw new Error(`${type}.create: type non enregistré`);
+      const p = (payload ?? {}) as CreatePayload;
       const obj = {
         ...def.defaultValues(),
         ...(p.object ?? {}),
         type,
         id: p.id ?? genId(),
       } as EditorObject;
-      ctx.project.mutate((project) => {
+      return (project) => {
         trackArray(project, trackKey).push(obj);
-      });
+      };
     });
-  };
 }
 
 /** `<type>.update` — fusion superficielle d'un patch (id/type protégés). */
 export function updateCommand(type: BuiltinObjectType): CommandFactory {
   const trackKey = TRACK_OF_TYPE[type];
-  return (payload): ReturnType<typeof snapshotCommand> => {
-    const p = payload as UpdatePayload;
-    return snapshotCommand(`${type}.update`, (ctx) => {
-      requireObject(ctx.project.get(), trackKey, p.objectId, `${type}.update`);
-      ctx.project.mutate((project) => {
-        const obj = trackArray(project, trackKey).find((o) => o.id === p.objectId);
-        if (!obj) return;
+  return (payload) =>
+    snapshotCommand(`${type}.update`, (ctx) => {
+      const p = payload as UpdatePayload;
+      const obj = requireObject(ctx.project.get(), trackKey, p.objectId, `${type}.update`);
+      return () => {
         Object.assign(obj, p.patch ?? {}, { id: obj.id, type: obj.type });
-      });
+      };
     });
-  };
 }
 
 /** `<type>.delete` — retire l'objet ciblé de sa piste. */
 export function deleteCommand(type: BuiltinObjectType): CommandFactory {
   const trackKey = TRACK_OF_TYPE[type];
-  return (payload): ReturnType<typeof snapshotCommand> => {
-    const p = payload as DeletePayload;
-    return snapshotCommand(`${type}.delete`, (ctx) => {
-      requireObject(ctx.project.get(), trackKey, p.objectId, `${type}.delete`);
-      ctx.project.mutate((project) => {
-        const arr = trackArray(project, trackKey);
-        const idx = arr.findIndex((o) => o.id === p.objectId);
-        if (idx >= 0) arr.splice(idx, 1);
-      });
+  return (payload) =>
+    snapshotCommand(`${type}.delete`, (ctx) => {
+      const p = payload as DeletePayload;
+      const project = ctx.project.get();
+      const obj = requireObject(project, trackKey, p.objectId, `${type}.delete`);
+      const arr = trackArray(project, trackKey);
+      return () => {
+        arr.splice(arr.indexOf(obj), 1);
+      };
     });
-  };
 }
