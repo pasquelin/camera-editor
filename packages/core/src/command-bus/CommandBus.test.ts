@@ -22,7 +22,7 @@ const createText: CommandFactory = (payload): Command => {
 
 describe("CommandBus", () => {
   it("execute applique, undo révoque, redo rejoue", () => {
-    const core = new Core();
+    const core = new Core({ builtins: false });
     core.registerCommand("text.create", createText);
 
     core.execute("text.create", { id: "t1", content: "Hello" });
@@ -38,7 +38,7 @@ describe("CommandBus", () => {
   });
 
   it("émet stack:changed à l'exécution", () => {
-    const core = new Core();
+    const core = new Core({ builtins: false });
     core.registerCommand("text.create", createText);
     let count = 0;
     core.on("stack:changed", () => {

@@ -132,7 +132,9 @@ export interface ClipJunction {
 }
 
 export interface ProjectTracks {
-  video: VideoObject[];
+  // La piste visuelle accueille clips vidéo ET images fixes (cf. docs/05-TIMELINE.md :
+  // un VideoTrack contient VideoObject + ImageObject).
+  video: (VideoObject | ImageObject)[];
   audio: AudioObject[];
   text: TextObject[];
   sticker: StickerObject[];
