@@ -24,6 +24,7 @@ export * from "@media-studio/security";
 export * from "@media-studio/asset-manager";
 export * from "@media-studio/transition-engine";
 export * from "@media-studio/audio-engine";
+export * from "@media-studio/camera";
 
 // Contrôleurs d'édition headless
 export * from "@media-studio/video-editor";

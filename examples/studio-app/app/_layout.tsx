@@ -19,6 +19,10 @@ export default function RootLayout() {
       <MediaStudioProvider license={license} exportRenderer={exportRenderer}>
         <Stack screenOptions={{ headerLargeTitle: true }}>
           <Stack.Screen name="index" options={{ title: "Media Studio" }} />
+          <Stack.Screen
+            name="camera"
+            options={{ title: "Caméra", presentation: "fullScreenModal" }}
+          />
         </Stack>
         {/* Éditeur présenté en overlay quand useMediaStudio().open() est appelé */}
         <MediaStudio />
