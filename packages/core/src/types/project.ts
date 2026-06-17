@@ -36,6 +36,8 @@ export interface ImageObject extends EditorObject {
   type: "image";
   source: string;
   crop: { x: number; y: number; width: number; height: number };
+  flipH: boolean; // miroir horizontal
+  flipV: boolean; // miroir vertical
 }
 
 export interface TextObject extends EditorObject {

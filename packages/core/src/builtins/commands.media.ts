@@ -30,6 +30,38 @@ export const cropCommand: CommandFactory = (payload) =>
     };
   });
 
+/** `photo.flipH` — bascule le miroir horizontal d'une image. */
+export const photoFlipHCommand: CommandFactory = (payload) =>
+  snapshotCommand("photo.flipH", (ctx) => {
+    const p = payload as { objectId: string };
+    const img = requireObject(
+      ctx.project.get(),
+      "video",
+      p.objectId,
+      "photo.flipH",
+      "image",
+    ) as ImageObject;
+    return () => {
+      img.flipH = !img.flipH;
+    };
+  });
+
+/** `photo.flipV` — bascule le miroir vertical d'une image. */
+export const photoFlipVCommand: CommandFactory = (payload) =>
+  snapshotCommand("photo.flipV", (ctx) => {
+    const p = payload as { objectId: string };
+    const img = requireObject(
+      ctx.project.get(),
+      "video",
+      p.objectId,
+      "photo.flipV",
+      "image",
+    ) as ImageObject;
+    return () => {
+      img.flipV = !img.flipV;
+    };
+  });
+
 // ---- text ------------------------------------------------------------------
 
 export const styleCommand: CommandFactory = (payload) =>
