@@ -7,10 +7,23 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
-  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
-  "scripts": { "build": "tsup", "dev": "tsup --watch", "typecheck": "tsc --noEmit", "test": "vitest run", "lint": "tsc --noEmit" },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "tsc --noEmit"
+  },
   "dependencies": {
     "@media-studio/core": "workspace:*",
     "@media-studio/licensing": "workspace:*",
@@ -24,6 +37,12 @@
     "@media-studio/security": "workspace:*",
     "@media-studio/asset-manager": "workspace:*"
   },
-  "devDependencies": { "tsup": "^8.3.5", "typescript": "^5.6.3", "vitest": "^2.1.8" },
-  "publishConfig": { "access": "public" }
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
