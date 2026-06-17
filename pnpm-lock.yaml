@@ -34,11 +34,10 @@ importers:
         version: 2.1.9
 
   packages/licensing:
-    dependencies:
+    devDependencies:
       '@media-studio/core':
         specifier: workspace:*
         version: link:../core
-    devDependencies:
       tsup:
         specifier: ^8.3.5
         version: 8.5.1(postcss@8.5.15)(typescript@5.9.3)
