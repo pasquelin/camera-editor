@@ -73,6 +73,7 @@ interface VideoObject extends EditorObject {
   volume: number;
   muted: boolean;
   reversed: boolean;
+  cover?: number;      // timecode (ms) de la frame de couverture/vignette (fonction "cover")
 }
 
 interface ImageObject extends EditorObject {
@@ -94,6 +95,7 @@ interface StickerObject extends EditorObject {
 
 interface AudioObject extends EditorObject {
   source: string;
+  role: "background" | "voiceover" | "sfx";  // rôle de la piste audio
   volume: number;      // 0–2
   fadeIn: number;      // ms
   fadeOut: number;     // ms
@@ -131,7 +133,7 @@ type TextAnimation =
   | "slideUp" | "slideDown" | "slideLeft" | "slideRight"
   | "zoom" | "bounce" | "typewriter";
 
-// StickerAnimation : non énuméré dans le brief — valeurs inférées (à valider).
+// StickerAnimation : valeurs confirmées par 20-STICKER-ENGINE.
 type StickerAnimation = "fadeIn" | "fadeOut" | "zoom" | "bounce" | "pulse" | "spin";
 
 interface FilterParams {

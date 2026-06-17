@@ -80,8 +80,8 @@ Cinematic · Nature.
 
 Elle est **entièrement remplaçable** via `config.musicLibrary`
 ([12-CONFIGURATION](./12-CONFIGURATION.md)) : un intégrateur peut pointer vers sa
-propre source (URL d'API, fichiers locaux, plugin tiers). Les intégrations futures
-envisagées (plugin) incluent Pixabay Music, Free Music Archive et Jamendo.
+propre source (URL d'API, fichiers locaux, plugin tiers). Des intégrations tierces
+(Pixabay Music, Free Music Archive, Jamendo) sont disponibles via le système de plugins.
 
 L'UI par défaut associée est `<AudioPicker />` ([24-UI-COMPONENTS](./24-UI-COMPONENTS.md)).
 

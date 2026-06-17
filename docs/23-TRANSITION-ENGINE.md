@@ -111,7 +111,7 @@ interface ClipJunction {
 
 // Commandes passées au CommandBus
 interface TransitionSetCommand {
-  command: "transition.set";
+  type: "transition.set";
   payload: {
     trackId: string;
     clipAId: string;
@@ -121,7 +121,7 @@ interface TransitionSetCommand {
 }
 
 interface TransitionUpdateCommand {
-  command: "transition.update";
+  type: "transition.update";
   payload: {
     trackId: string;
     clipAId: string;
@@ -131,7 +131,7 @@ interface TransitionUpdateCommand {
 }
 
 interface TransitionRemoveCommand {
-  command: "transition.remove";
+  type: "transition.remove";
   payload: {
     trackId: string;
     clipAId: string;
@@ -206,7 +206,7 @@ interface MediaStudioConfig {
 
 ## Cross-refs
 
-- [02-PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md) — stockage des `ClipJunction` dans le schéma de projet.
+- [02-PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md) — schéma de projet ; les `ClipJunction` seront stockées dans une propriété dédiée (ex. `tracks.transitions`) lors de la finalisation du schéma.
 - [04-RENDERER](./04-RENDERER.md) — exécution des transitions en preview.
 - [05-TIMELINE](./05-TIMELINE.md) — clips contigus, points de jointure, overlap.
 - [08-ASSET-MANAGER](./08-ASSET-MANAGER.md) — distribution et résolution des `TransitionPack`.

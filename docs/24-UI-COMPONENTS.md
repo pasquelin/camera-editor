@@ -111,7 +111,7 @@ headless sous-jacent.
 
 ```tsx
 <MediaStudio
-  mode="video"
+  flow={{ initialMode: "video" }}
   slots={{
     AudioPicker: ({ tracks, onSelectTrack, onAddTrack, theme }) => (
       <MyCustomAudioPicker
@@ -217,7 +217,7 @@ await MediaStudio.initialize({
 
 // 2. Au montage — slots et thème local
 <MediaStudio
-  mode="video"
+  flow={{ initialMode: "video" }}
   slots={{ ExportPanel: MyExportPanel }}
   theme={{ colors: { accent: "#FF0000" } }}
 />
@@ -231,7 +231,7 @@ empêche le composant et son controller sous-jacent d'être instanciés.
 
 ## Capacités avancées
 
-- Les composants par défaut couvrent les modes `photo`, `video` et `audio` seul.
+- Les composants par défaut couvrent les modes `photo` et `video` (y compris la configuration « audio seul » obtenue via le flag `enableCamera: false` et `enableAudio: true`).
 - Le theming repose sur les **tokens** définis dans `Theme` ; des surcharges de styles
   arbitraires via StyleSheet peuvent être appliquées en complément des tokens.
 - Un slot peut recevoir **plusieurs overrides partiels composés** sur un même slot ;

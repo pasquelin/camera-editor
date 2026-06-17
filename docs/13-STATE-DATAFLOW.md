@@ -84,6 +84,7 @@ interface UiStore {
 interface StudioStore {
   step: "capture" | "edit" | "preview";   // vue rendue par <MediaStudio />
   mode: "photo" | "video";                 // toggle (pilote l'éditeur)
+  projectId: string;                       // projet courant (aligné sur StudioState)
 }                                          // → 26-STUDIO-FLOW (pas de routeur)
 
 // 6) jobStore — jobs d'export en arrière-plan (non-bloquants)
@@ -145,7 +146,7 @@ sélecteurs. L'EventBus est l'unique pont Core → stores.
 // Dans un worklet (UI thread), pour repasser en JS on passe explicitement :
 const commit = (x: number, y: number) => {
   "worklet";
-  runOnJS(execute)("object.update", { id, x, y });   // commit unique en fin de geste
+  runOnJS(execute)("sticker.update", { id, x, y });   // commit unique en fin de geste (ex. déplacement d'un sticker)
 };
 ```
 

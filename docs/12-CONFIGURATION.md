@@ -106,7 +106,7 @@ interface Capabilities {
 }
 
 // Sur le composant racine :
-<MediaStudio mode="video" enableCamera enableAudio enableFilters />
+<MediaStudio flow={{ initialMode: "video" }} enableCamera enableAudio enableFilters />
 ```
 
 Certaines capacités sont **gated par licence** (cf. [07-LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md)) :
@@ -178,7 +178,7 @@ interface MediaStudioSlots {
 }
 
 <MediaStudio
-  mode="video"
+  flow={{ initialMode: "video" }}
   slots={{
     Toolbar: MyToolbar,                 // remplace entièrement la toolbar
     ExportPanel: ({ exportConfig, onExport, progress }) => <MyExport … />,
@@ -228,12 +228,12 @@ c'est la garantie qu'aucune capacité n'est cachée derrière l'UI.
 | Quand | Quoi | Comment |
 |-------|------|---------|
 | **Init** (une fois) | licence, adapters, catalogues, limites | `MediaStudio.initialize(config)` |
-| **Montage** (par éditeur) | mode, capabilities, slots, callbacks | props du composant `<MediaStudio>` |
+| **Montage** (par éditeur) | flow (initialMode, steps…), capabilities, slots, callbacks | props du composant `<MediaStudio>` |
 | **Runtime** (à chaud) | thème, sélection, commandes | `setTheme()`, hooks, `editor.execute()` |
 
 ## Recette — « adapter le module à mon projet »
 
-1. **Le strict minimum** : `initialize({ })` puis `<MediaStudio mode="photo" />`.
+1. **Le strict minimum** : `initialize({ })` puis `<MediaStudio flow={{ initialMode: "photo" }} />`.
 2. **Aux couleurs de mon app** : passer un `theme` partiel à l'init ou `setTheme`.
 3. **Désactiver ce dont je n'ai pas besoin** : flags `enableX={false}`.
 4. **Remplacer un écran** : fournir un `slots.ExportPanel`.

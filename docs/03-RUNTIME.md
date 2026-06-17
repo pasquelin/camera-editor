@@ -136,7 +136,7 @@ l'Audio Engine se resynchronise (micro-seek). Détail : [22-AUDIO-ENGINE](./22-A
 ## Configuration
 
 - Aucune capacité directe ne dépend d'un flag : le Runtime est requis dès qu'il y a
-  lecture (`mode="video"`). En `mode="photo"` il n'est pas monté.
+  lecture (mode `video`, via `studioStore.mode`). En mode `photo` il n'est pas monté.
 - `playbackRate` : plage `[0.25, 4.0]` par défaut, configurable (cohérent avec `VideoObject.speed`).
 - **Lecture inversée temps réel** : le `reversed` d'un `VideoObject` est un attribut
   de rendu interprété par le Runtime ; la lecture inversée est supportée au niveau clip.

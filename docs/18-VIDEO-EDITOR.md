@@ -75,7 +75,7 @@ timeline : `durationOnTimeline = (trimOut - trimIn) / speed`.
 ### Timeline multi-tracks
 
 La Timeline est le **référentiel de position temporelle** de tous les clips. Le
-Video Editor la pilote via les commandes `video:*` ; la Timeline réagit en
+Video Editor la pilote via les commandes `video.*` ; la Timeline réagit en
 recalculant les positions et en notifiant le Runtime de la durée totale.
 → [05-TIMELINE](./05-TIMELINE.md).
 
@@ -241,11 +241,11 @@ type VideoCommand =
 ## Cross-refs
 
 - [03-RUNTIME](./03-RUNTIME.md) — orchestrateur play / pause / seek / loop utilisé pour la preview.
-- [05-TIMELINE](./05-TIMELINE.md) — modèle de tracks, layers, positions temporelles ; destination des commandes `video:*`.
+- [05-TIMELINE](./05-TIMELINE.md) — modèle de tracks, layers, positions temporelles ; destination des commandes `video.*`.
 - [22-AUDIO-ENGINE](./22-AUDIO-ENGINE.md) — gestion des pistes audio indépendantes et de l'audio natif des clips.
 - [04-RENDERER](./04-RENDERER.md) — pipeline de preview temps réel piloté par la clock Runtime.
 - [09-EXPORT-ENGINE](./09-EXPORT-ENGINE.md) — pipeline d'export final (encode, codecs, formats).
 - [23-TRANSITION-ENGINE](./23-TRANSITION-ENGINE.md) — transitions entre clips contigus (hors périmètre Video Editor).
-- [02-PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md) — `VideoObject` et ses attributs (`trimIn`, `trimOut`, `speed`, `reversed`, `muted`, `coverTimeMs`).
+- [02-PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md) — `VideoObject` et ses attributs (`trim`, `speed`, `reversed`, `muted`) ; `trimIn`/`trimOut`/`coverTimeMs` sont les noms utilisés dans les commandes CommandBus (cf. interfaces TS ci-dessus).
 - [12-CONFIGURATION](./12-CONFIGURATION.md) — flags `enableVideoEditor` et paramètres associés.
 - [24-UI-COMPONENTS](./24-UI-COMPONENTS.md) — `<VideoEditor />` et ses slots.

@@ -33,7 +33,8 @@ ObjectRegistry (types built-in) · PluginManager · AssetManager.
 ### Jalon 1 — Photo
 PreviewRenderer (Skia, calques statiques) · Photo Editor (crop, rotate, flip, draw) ·
 Text Engine + Font Manager · Sticker Engine · Filter Engine (photo) · ExportRenderer
-(JPEG, PNG) · LicenseManager + interface de validation.
+(JPEG, PNG) **+ export en job d'arrière-plan / aperçu immédiat**
+([27-BACKGROUND-JOBS](./27-BACKGROUND-JOBS.md)) · LicenseManager + interface de validation.
 → [04-RENDERER](./04-RENDERER.md), [17-PHOTO-EDITOR](./17-PHOTO-EDITOR.md),
 [19-TEXT-ENGINE](./19-TEXT-ENGINE.md), [20-STICKER-ENGINE](./20-STICKER-ENGINE.md),
 [21-FILTER-ENGINE](./21-FILTER-ENGINE.md), [07-LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md).
@@ -51,6 +52,8 @@ Audio Engine · Transition Engine · ExportRenderer vidéo (MP4, MOV) · Securit
 [23-TRANSITION-ENGINE](./23-TRANSITION-ENGINE.md), [09-EXPORT-ENGINE](./09-EXPORT-ENGINE.md).
 
 ### Jalon 4 — Distribution
+**Composant Studio orchestré** (machine à états interne capture→edit→preview, éditeur
+unifié, vignette de progression — [26-STUDIO-FLOW](./26-STUDIO-FLOW.md)) ·
 ResourcePack System · Music Library intégrée · UI theming complet · CLI `media-studio` ·
 Documentation complète (Docusaurus) · Publication npm (`@media-studio/*`) ·
 Exemples d'intégration.

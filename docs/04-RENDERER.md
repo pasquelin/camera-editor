@@ -111,8 +111,8 @@ les deux pipelines partagent la *spécification*, pas l'*implémentation*.
 
 ## Configuration
 
-- Le Preview est monté selon le `mode` (`photo` → calques statiques uniquement ;
-  `video` → + composant vidéo + clock).
+- Le Preview est monté selon `studioStore.mode` (`photo` → calques statiques uniquement ;
+  `video` → + composant vidéo + clock). → [13-STATE-DATAFLOW](./13-STATE-DATAFLOW.md).
 - Le mode **headless** expose la surface de preview comme composant attachable, sans
   l'UI par défaut. → [12-CONFIGURATION](./12-CONFIGURATION.md).
 - `ExportConfig` (format, résolution, fps, bitrates, codec, quality) :
