@@ -202,6 +202,7 @@ Communication découplée ; l'UI lit via les stores, jamais l'EventBus directeme
 editor.on("object:selected",   (obj: EditorObject) => {});
 editor.on("object:updated",    (obj: EditorObject) => {});
 editor.on("object:deleted",    (id: string) => {});
+editor.on("stack:changed",     () => {});            // pile undo/redo modifiée
 editor.on("timeline:changed",  () => {});
 editor.on("timeline:seeked",   (timeMs: number) => {});
 editor.on("project:saved",     () => {});

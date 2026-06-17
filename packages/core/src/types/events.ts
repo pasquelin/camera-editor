@@ -6,6 +6,7 @@ export interface EditorEventMap {
   "object:selected": EditorObject;
   "object:updated": EditorObject;
   "object:deleted": string;
+  "stack:changed": void;
   "timeline:changed": void;
   "timeline:seeked": number;
   "project:saved": void;

@@ -4,13 +4,14 @@ import type { Project, Snapshot } from "../types/project";
 import type { StorageAdapter } from "../types/storage";
 import { deepClone } from "../utils/clone";
 import { genId } from "../utils/id";
+import { nowIso } from "../utils/time";
 
 export const CURRENT_PROJECT_VERSION = "1.0.0";
 const STORAGE_KEY = "media-studio:project";
 
 /** Crée un projet vide valide à la version courante. */
 export function createEmptyProject(): Project {
-  const now = new Date().toISOString();
+  const now = nowIso();
   return {
     version: CURRENT_PROJECT_VERSION,
     id: genId(),
@@ -61,7 +62,7 @@ export class ProjectManager {
   }
 
   async save(): Promise<void> {
-    if (this.storage) await this.storage.setItem(STORAGE_KEY, this.export());
+    if (this.storage) await this.storage.write(STORAGE_KEY, this.export());
     this.events.emit("project:saved");
   }
 
@@ -77,7 +78,7 @@ export class ProjectManager {
   /** Applique une mutation au projet (utilisé par les commandes du CommandBus). */
   mutate(mutator: (project: Project) => void): void {
     mutator(this.project);
-    this.project.updatedAt = new Date().toISOString();
+    this.project.updatedAt = nowIso();
     this.events.emit("timeline:changed");
   }
 }
