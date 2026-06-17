@@ -121,8 +121,15 @@ export const imageObjectDefinition: ObjectDefinition<ImageObject> = {
     type: "image",
     source: "",
     crop: { x: 0, y: 0, width: 0, height: 0 },
+    flipH: false,
+    flipV: false,
   }),
-  validate: (obj): boolean => validateBase(obj, "image") && isStr(obj.source) && isRect(obj.crop),
+  validate: (obj): boolean =>
+    validateBase(obj, "image") &&
+    isStr(obj.source) &&
+    isRect(obj.crop) &&
+    isBool(obj.flipH) &&
+    isBool(obj.flipV),
 };
 
 // ---- text ------------------------------------------------------------------

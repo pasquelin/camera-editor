@@ -19,10 +19,17 @@ import {
   audioTrimCommand,
   audioVolumeCommand,
   cropCommand,
+  photoFlipHCommand,
+  photoFlipVCommand,
   stickerAnimateCommand,
   styleCommand,
   textAnimateCommand,
 } from "./commands.media";
+import {
+  transitionRemoveCommand,
+  transitionSetCommand,
+  transitionUpdateCommand,
+} from "./commands.transition";
 import { builtinObjectDefinitions } from "./definitions";
 import type { BuiltinObjectType } from "./helpers";
 
@@ -55,4 +62,13 @@ export function registerBuiltins(core: Core): void {
   core.registerCommand("audio.trim", audioTrimCommand);
   core.registerCommand("audio.volume", audioVolumeCommand);
   core.registerCommand("audio.fade", audioFadeCommand);
+
+  // Transformations photo géométriques (docs/17-PHOTO-EDITOR.md).
+  core.registerCommand("photo.flipH", photoFlipHCommand);
+  core.registerCommand("photo.flipV", photoFlipVCommand);
+
+  // Transitions entre clips contigus (docs/23-TRANSITION-ENGINE.md).
+  core.registerCommand("transition.set", transitionSetCommand);
+  core.registerCommand("transition.update", transitionUpdateCommand);
+  core.registerCommand("transition.remove", transitionRemoveCommand);
 }

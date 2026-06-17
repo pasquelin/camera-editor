@@ -109,6 +109,8 @@ interface VideoObject extends EditorObject {
 interface ImageObject extends EditorObject {
   source: string;
   crop: { x: number; y: number; width: number; height: number };
+  flipH: boolean;      // miroir horizontal (Photo Editor)
+  flipV: boolean;      // miroir vertical (Photo Editor)
 }
 
 interface TextObject extends EditorObject {
