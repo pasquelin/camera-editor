@@ -1,16 +1,29 @@
 /**
  * PreviewRenderer temps réel (Skia) — compose les calques visuels du projet sur un
  * canvas Skia (parité preview/export assurée par le pipeline d'export distinct).
- * Couvre ici la composition photo : images de base + overlays texte. Les frames
- * vidéo sont affichées par le lecteur natif (slot), les filtres/stickers GPU sont
- * des extensions. Voir docs/04-RENDERER.md, docs/17, ADR-0010.
+ * Couvre la composition photo : images de base + stickers (images) + overlays texte.
+ * Les frames vidéo sont affichées par le lecteur natif (slot) ; les filtres GPU sont
+ * une extension. Voir docs/04-RENDERER.md, docs/17, docs/20, ADR-0010.
+ *
+ * TODO(phase native) : appliquer `scale`/`rotation` via une matrice Skia (ici seules
+ * position et opacité sont appliquées).
  */
-import React from "react";
+import React, { useMemo } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 import { Canvas, Image, Text as SkiaText, matchFont, useImage } from "@shopify/react-native-skia";
-import type { ImageObject, Project, TextObject } from "@media-studio/core";
+import type { ImageObject, Project, StickerObject, TextObject } from "@media-studio/core";
 
-function ImageLayer({ object }: { object: ImageObject }): React.JSX.Element | null {
+/** Forme commune des calques rendus comme image (ImageObject, StickerObject). */
+interface ImageLike {
+  source: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  opacity: number;
+}
+
+function ImageLayer({ object }: { object: ImageLike }): React.JSX.Element | null {
   const image = useImage(object.source);
   if (!image) return null;
   return (
@@ -18,6 +31,7 @@ function ImageLayer({ object }: { object: ImageObject }): React.JSX.Element | nu
       image={image}
       x={object.x}
       y={object.y}
+      // width/height 0 (défaut) → taille intrinsèque de l'image.
       width={object.width || image.width()}
       height={object.height || image.height()}
       fit="cover"
@@ -27,10 +41,10 @@ function ImageLayer({ object }: { object: ImageObject }): React.JSX.Element | nu
 }
 
 function TextLayer({ object }: { object: TextObject }): React.JSX.Element {
-  const font = matchFont({
-    fontFamily: object.style.fontFamily,
-    fontSize: object.style.fontSize,
-  });
+  const font = useMemo(
+    () => matchFont({ fontFamily: object.style.fontFamily, fontSize: object.style.fontSize }),
+    [object.style.fontFamily, object.style.fontSize],
+  );
   return (
     <SkiaText
       x={object.x}
@@ -50,21 +64,28 @@ export interface PreviewRendererProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/** Compose le projet (images + texte) sur un canvas Skia. */
+/** Compose le projet (images + stickers + texte) sur un canvas Skia. */
 export function PreviewRenderer({
   project,
   width,
   height,
   style,
 }: PreviewRendererProps): React.JSX.Element {
-  const images = project.tracks.video.filter(
-    (o): o is ImageObject => o.type === "image" && o.visible,
+  const { video, sticker, text } = project.tracks;
+
+  const images = useMemo(
+    () => video.filter((o): o is ImageObject => o.type === "image" && o.visible),
+    [video],
   );
-  const texts = project.tracks.text.filter((o) => o.visible);
+  const stickers = useMemo(() => sticker.filter((o) => o.visible), [sticker]);
+  const texts = useMemo(() => text.filter((o) => o.visible), [text]);
 
   return (
     <Canvas style={[{ width, height }, style]}>
       {images.map((object) => (
+        <ImageLayer key={object.id} object={object} />
+      ))}
+      {stickers.map((object: StickerObject) => (
         <ImageLayer key={object.id} object={object} />
       ))}
       {texts.map((object) => (

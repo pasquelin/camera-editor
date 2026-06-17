@@ -52,10 +52,10 @@ export function createMusicLibrary(tracks: readonly MusicTrack[] = []): MusicSou
 
   return {
     categories,
-    list: async (category) =>
-      category === undefined
-        ? [...byId.values()]
-        : [...byId.values()].filter((t) => t.category === category),
+    list: async (category) => {
+      const all = [...byId.values()];
+      return category === undefined ? all : all.filter((t) => t.category === category);
+    },
     get: async (trackId) => {
       const track = byId.get(trackId);
       if (!track) throw new Error(`music-library: piste introuvable "${trackId}"`);
