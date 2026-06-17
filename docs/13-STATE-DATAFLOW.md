@@ -94,6 +94,11 @@ interface JobStore {
 }                                          // → 27-BACKGROUND-JOBS
 ```
 
+> **`studioStore` et `jobStore` vivent dans le `MediaStudioProvider` racine**, pas
+> dans l'écran d'édition. C'est ce qui permet aux jobs de **survivre à la fermeture de
+> l'éditeur et à la navigation**, et à la vignette de progression d'être visible sur
+> tous les écrans. → [26-STUDIO-FLOW](./26-STUDIO-FLOW.md), [ADR-0017](./ADR/0017-root-provider-portal-presentation.md).
+
 ### Pourquoi `currentTime` n'est pas dans Zustand
 
 Le temps courant change à chaque frame (jusqu'à 60×/s). Le mettre dans Zustand

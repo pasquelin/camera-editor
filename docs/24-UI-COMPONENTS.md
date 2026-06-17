@@ -39,6 +39,7 @@ il n'a pas à câbler les sous-vues ni leurs events. Les composants ci-dessous r
 
 | Composant | Module associé | Slot correspondant |
 |-----------|---------------|-------------------|
+| `<MediaStudioProvider />` | [26-STUDIO-FLOW](./26-STUDIO-FLOW.md) | _(racine — détient jobs + vignette globale)_ |
 | `<MediaStudio />` | [26-STUDIO-FLOW](./26-STUDIO-FLOW.md) | _(orchestrateur — non slotable)_ |
 | `<CameraView />` | [16-CAMERA](./16-CAMERA.md) | `slots.CameraView` |
 | `<PhotoEditor />` | [17-PHOTO-EDITOR](./17-PHOTO-EDITOR.md) | `slots.PhotoEditor` |
@@ -61,11 +62,21 @@ s'adaptent au contenu (la timeline apparaît dès que le projet a une durée —
 photo animée). Le thème (tokens) s'applique uniformément aux deux.
 → [17-PHOTO-EDITOR](./17-PHOTO-EDITOR.md), [18-VIDEO-EDITOR](./18-VIDEO-EDITOR.md).
 
-### `<ExportProgress />` — vignette de progression
+### `<MediaStudioProvider />` — racine & API impérative
 
-Affiche une **vignette + le %** de l'export en arrière-plan, par-dessus l'éditeur, à la
-TikTok, **sans bloquer** l'interaction : l'utilisateur continue d'éditer/naviguer
-pendant le rendu. → [27-BACKGROUND-JOBS](./27-BACKGROUND-JOBS.md).
+Monté **une fois à la racine** de l'app, il détient l'état global (jobs, progression,
+drafts) et expose `useMediaStudio()` → `open()/close()/jobs/activeProgress`. Il
+**présente l'éditeur en overlay plein écran** (portail) au-dessus de ta navigation —
+pas de routeur. C'est le mode recommandé pour ouvrir l'éditeur **de n'importe où** et
+afficher la progression **sur tous les écrans**. → [26-STUDIO-FLOW](./26-STUDIO-FLOW.md),
+[ADR-0017](./ADR/0017-root-provider-portal-presentation.md).
+
+### `<ExportProgress />` — vignette de progression globale
+
+Rendu **par le Provider racine**, il affiche la **vignette + le %** de l'export en
+arrière-plan **au-dessus de tous les écrans**, à la TikTok, **sans bloquer**
+l'interaction : l'utilisateur continue d'éditer/naviguer pendant le rendu.
+→ [27-BACKGROUND-JOBS](./27-BACKGROUND-JOBS.md).
 
 ### Theming — design tokens
 

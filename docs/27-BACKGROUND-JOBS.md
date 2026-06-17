@@ -50,6 +50,35 @@ queued ─▶ running ─▶ completed (outputUri)
    └────────────▶ cancelled   (cancel())
 ```
 
+### Détenu par le Provider racine, visible partout
+
+Le `JobQueue` vit dans le **`MediaStudioProvider`** monté à la racine de l'app
+([26-STUDIO-FLOW](./26-STUDIO-FLOW.md)), **pas** dans l'écran d'édition. Conséquence :
+quand l'éditeur se ferme, **les jobs continuent** et la **vignette globale**
+(`<ExportProgress />`) reste affichée au-dessus de **tous** les écrans. L'utilisateur
+navigue librement pendant le traitement.
+
+### Persistance & tâche native de fond (survie au backgrounding)
+
+L'encodage tourne sur un **thread natif** (dispatch queue iOS / coroutine Android),
+jamais sur le thread JS — l'UI ne gèle pas. Pour **survivre au passage en arrière-plan**
+de l'app, le job s'appuie sur les **tâches de fond de l'OS**, exposées via un module
+natif Expo :
+
+| Plateforme | Mécanisme |
+|-----------|-----------|
+| iOS | `beginBackgroundTask` (sursis court) / `BGProcessingTask` (rendu long) |
+| Android | `WorkManager` / Foreground Service (notification de progression) |
+
+Les jobs sont **persistés** : leur état est réhydraté au redémarrage de l'app ; un job
+interrompu peut reprendre ou être relancé.
+
+### Drafts (rien n'est perdu)
+
+Le projet en cours est sauvegardé en **draft** local (`ProjectManager.save`,
+[02-PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md)). L'utilisateur peut **quitter et reprendre**
+son montage ; le snapshot d'export et le draft vivant sont indépendants.
+
 ## Interfaces (TS)
 
 ```ts
@@ -84,10 +113,11 @@ Les événements globaux d'export restent émis ([01-ARCHITECTURE](./01-ARCHITEC
 `export:started`, `export:progress(pct)`, `export:completed(uri)`, `export:failed(err)`.
 Le `JobQueue` ajoute leur granularité **par job** (`job:progress`, etc.).
 
-### UI — vignette de progression
+### UI — vignette de progression globale
 
-Un composant `<ExportProgress />` ([24-UI-COMPONENTS](./24-UI-COMPONENTS.md)) affiche la
-**vignette + le pourcentage** par-dessus l'éditeur, à la TikTok, sans bloquer l'interaction.
+`<ExportProgress />` ([24-UI-COMPONENTS](./24-UI-COMPONENTS.md)), rendu par le
+**Provider racine**, affiche la **vignette + le pourcentage** au-dessus de **tous** les
+écrans, à la TikTok, sans bloquer l'interaction — l'utilisateur continue de naviguer.
 
 ## Configuration
 
@@ -97,6 +127,8 @@ Un composant `<ExportProgress />` ([24-UI-COMPONENTS](./24-UI-COMPONENTS.md)) af
   défaut 1).
 - **Vignette** : affichage de la vignette de progression activable (`jobs.showThumbnail`,
   défaut true) ; intervalle de mise à jour du `%` configurable.
+- **Persistance** : reprise des jobs au redémarrage activable (`jobs.persist`, défaut
+  true) ; survie au backgrounding via tâche native.
 - **Annulation** : `JobQueue.cancel(jobId)` interrompt proprement ; le projet vivant
   est intact.
 - Le moteur d'export sous-jacent (FFmpeg / natif) est inchangé — le job est une
@@ -105,6 +137,7 @@ Un composant `<ExportProgress />` ([24-UI-COMPONENTS](./24-UI-COMPONENTS.md)) af
 ## Décisions liées
 
 - [ADR-0016](./ADR/0016-background-export-jobs.md) — jobs d'export en arrière-plan + snapshot.
+- [ADR-0017](./ADR/0017-root-provider-portal-presentation.md) — jobs détenus par le Provider racine (visibles partout).
 - [ADR-0007](./ADR/0007-mutations-commandbus-undo.md) — snapshot immuable du projet.
 - [ADR-0010](./ADR/0010-preview-export-pipeline-split.md) — aperçu (preview) ≠ rendu (export).
 

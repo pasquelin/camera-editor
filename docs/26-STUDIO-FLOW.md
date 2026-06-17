@@ -95,6 +95,70 @@ flow.setMode("photo");
 flow.finishEditing();                 // passe à l'aperçu, déclenche le job d'export
 ```
 
+## Deux modes d'intégration
+
+| Mode | Quand | Comment |
+|------|-------|---------|
+| **Montage direct** | Un seul écran de création dans ton app | `<MediaStudio flow={…} />` posé dans cet écran. |
+| **Provider racine** (recommandé app-wide) | Création accessible **de partout**, traitement **non-bloquant** visible sur tous les écrans | `<MediaStudioProvider>` à la racine + `useMediaStudio().open()`. |
+
+### Provider racine & API impérative `open()`
+
+Pour le modèle « façon TikTok » — ouvrir l'éditeur de n'importe où et voir la
+progression sur **tous** les écrans sans rien bloquer — on monte **un Provider unique à
+la racine** de l'app. Il ne rend pas l'éditeur par défaut : il fournit un **contexte**
+(jobs, progression) et une **API impérative**. L'éditeur est présenté **en overlay
+plein écran via un portail**, **au-dessus** de ta navigation — **toujours pas de
+routeur** ([ADR-0017](./ADR/0017-root-provider-portal-presentation.md)).
+
+```tsx
+// À la racine, UNE fois, au-dessus de toute ta navigation
+import { MediaStudioProvider } from "@media-studio/sdk";
+
+<MediaStudioProvider>
+  <App />                {/* tes écrans / ta navigation, intacts */}
+</MediaStudioProvider>;
+```
+
+```tsx
+// Depuis n'importe quel écran : sur un bouton OU au load de l'écran
+import { useMediaStudio } from "@media-studio/sdk";
+
+function FeedScreen() {
+  const studio = useMediaStudio();
+  useEffect(() => {
+    // ouverture au montage de l'écran si souhaité :
+    // studio.open({ mode: "video" });
+  }, []);
+  return <CreateButton onPress={() => studio.open({ mode: "video" })} />;
+}
+```
+
+```ts
+interface MediaStudioContext {
+  open(opts?: { mode?: StudioMode; projectId?: string }): void;  // overlay plein écran
+  close(): void;
+  jobs: ExportJob[];               // jobs d'export en cours (lecture seule)
+  activeProgress: number | null;   // % global agrégé pour la vignette
+}
+
+const studio = useMediaStudio();   // disponible partout sous le Provider
+```
+
+Ce que le **Provider** garantit :
+
+- **Présentation par portail** : l'éditeur flotte au-dessus de l'app ; **ta navigation
+  reste intacte** (pas d'URL, pas de pile poussée par le SDK).
+- **Jobs persistants** : à la fermeture de l'éditeur, les jobs d'export **continuent en
+  arrière-plan** ; ils sont détenus par le Provider (racine), pas par l'écran.
+  → [27-BACKGROUND-JOBS](./27-BACKGROUND-JOBS.md).
+- **Vignette globale** : `<ExportProgress />` est rendu par le Provider **au-dessus de
+  tous les écrans** → l'utilisateur voit le `%` partout et **continue à naviguer**.
+- **Drafts** : le projet est persisté (reprise possible) — rien n'est perdu.
+
+> L'objectif central : **ne jamais bloquer l'utilisateur** sur un traitement. Il valide,
+> l'éditeur se ferme, il navigue librement, la vignette progresse au-dessus de tout.
+
 ## Configuration
 
 Le flow est **entièrement paramétrable** ([12-CONFIGURATION](./12-CONFIGURATION.md)) :
@@ -116,11 +180,14 @@ interface StudioFlowConfig {
   caméra.
 - **Caméra seule**, **éditeur seul**, **export seul** : on compose `steps` à volonté.
 - Chaque sous-vue reste remplaçable par slot et thémée par tokens (design unifié).
+- **Présentation** : `open()` ouvre l'éditeur en overlay plein écran (portail). Le
+  Provider accepte une config de présentation (animation, `dismissable`…).
 
 ## Décisions liées
 
 - [ADR-0015](./ADR/0015-studio-internal-state-machine.md) — machine à états interne (pas de routeur).
 - [ADR-0016](./ADR/0016-background-export-jobs.md) — aperçu + export en arrière-plan.
+- [ADR-0017](./ADR/0017-root-provider-portal-presentation.md) — Provider racine + présentation par portail.
 - [ADR-0009](./ADR/0009-headless-first-config-layers.md) — flow disponible aussi en headless.
 
 ## Cross-refs

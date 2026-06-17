@@ -79,6 +79,15 @@ représentant 100 % du brief.
 - MAJ : `00-VISION`, `12-CONFIGURATION`, `13-STATE-DATAFLOW`, `24-UI-COMPONENTS`,
   `17-PHOTO-EDITOR`, `18-VIDEO-EDITOR`, `22-AUDIO-ENGINE`, `09-EXPORT-ENGINE`, `README`.
 
+### ✅ Passe 6 — Provider racine & UX globale non-bloquante (livrée)
+- `MediaStudioProvider` monté à la racine : détient `JobQueue`, progression, drafts ;
+  API impérative `useMediaStudio().open()` ouvrant l'éditeur en **overlay/portail**
+  (pas de routeur). Vignette `<ExportProgress />` visible sur **tous** les écrans ;
+  jobs persistés, survie au backgrounding (tâche native) ; drafts.
+- ADR `0017` (Provider racine + présentation par portail).
+- MAJ : `26-STUDIO-FLOW`, `27-BACKGROUND-JOBS`, `24-UI-COMPONENTS`, `13-STATE-DATAFLOW`,
+  `00-VISION`.
+
 > Note : le SDK ne pratique **aucun gating de version** — tout est livré en V1. Les
 > docs n'ont pas de section « Limites » ; les paramètres chiffrés sont des défauts
 > configurables, 4K/H.265 des tiers de licence.

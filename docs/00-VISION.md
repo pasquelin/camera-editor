@@ -74,6 +74,20 @@ options. Le parcours est orchestré en interne par une **machine à états**
 ([27-BACKGROUND-JOBS](./27-BACKGROUND-JOBS.md)), et **tout** reste paramétrable
 (y compris afficher ou non l'aperçu).
 
+Pour une création **accessible de partout** et **jamais bloquante** (façon TikTok), on
+monte un **`MediaStudioProvider` à la racine** et on ouvre l'éditeur de n'importe quel
+écran via `useMediaStudio().open()` — la progression d'export reste visible sur tous
+les écrans pendant que l'utilisateur continue à naviguer :
+
+```tsx
+// racine de l'app
+<MediaStudioProvider><App /></MediaStudioProvider>
+
+// n'importe quel écran
+const studio = useMediaStudio();
+studio.open({ mode: "video" });   // overlay plein écran, pas de routeur
+```
+
 ## Configuration
 
 La vision « tout paramétrable » se concrétise par trois leviers, détaillés dans
