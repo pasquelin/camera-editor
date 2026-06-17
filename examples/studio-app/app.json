@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Media Studio",
+    "slug": "media-studio-example",
+    "scheme": "mediastudio",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": { "supportsTablet": true },
+    "android": { "edgeToEdgeEnabled": true },
+    "web": { "bundler": "metro", "output": "single" },
+    "plugins": ["expo-router"]
+  }
+}

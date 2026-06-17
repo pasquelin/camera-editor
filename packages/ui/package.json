@@ -1,0 +1,29 @@
+{
+  "name": "@media-studio/ui",
+  "version": "0.0.0",
+  "description": "Couche React du SDK Media Studio — MediaStudioProvider, hooks et composants par défaut (headless-first). Voir docs/24, docs/26, docs/27.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist"],
+  "sideEffects": false,
+  "scripts": { "build": "tsup", "dev": "tsup --watch", "typecheck": "tsc --noEmit", "test": "vitest run --passWithNoTests", "lint": "tsc --noEmit" },
+  "peerDependencies": {
+    "@media-studio/sdk": "workspace:*",
+    "react": ">=18",
+    "react-native": ">=0.74"
+  },
+  "devDependencies": {
+    "@media-studio/sdk": "workspace:*",
+    "@types/react": "^18.3.12",
+    "react": "^18.3.1",
+    "react-native": "^0.76.5",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  },
+  "publishConfig": { "access": "public" }
+}
