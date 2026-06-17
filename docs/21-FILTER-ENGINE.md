@@ -7,7 +7,7 @@
 Moteur de filtres et d'effets colorimétriques. Le Filter Engine applique des
 transformations visuelles aux médias (photo et vidéo) via deux pipelines complémentaires :
 `ColorFilter` / `ImageFilter` Skia pour la photo, et shaders GLSL (Metal / OpenGL ES)
-pour les effets GPU temps-réel sur la vidéo. Il expose un catalogue intégré de 18
+pour les effets GPU temps-réel sur la vidéo. Il expose un catalogue intégré de 17
 filtres organisés en 5 catégories, extensible via `FilterPack` et `config.filters`.
 Toutes les mutations passent par le CommandBus. La **parité preview/export** est une
 exigence structurelle — [ADR-0010](./ADR/0010-preview-export-pipeline-split.md).
