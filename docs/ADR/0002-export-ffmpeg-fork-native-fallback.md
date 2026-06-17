@@ -37,4 +37,4 @@ Pipeline d'export **à deux étages** :
 - **Rester sur `ffmpeg-kit-react-native`** : abandonné, binaires retirés — exclu.
 - **Tout natif, sans FFmpeg** : limite la portabilité des filtres complexes et
   duplique beaucoup de logique de composition entre iOS et Android.
-- **Export cloud** : reporté à un plugin (`media-studio-cloud-render`), hors V1.
+- **Export cloud** : non retenu comme fonctionnalité core ; disponible via le plugin externe `media-studio-cloud-render`.

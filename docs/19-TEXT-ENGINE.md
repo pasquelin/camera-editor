@@ -19,7 +19,7 @@ la couche Skia lit le `TextObject` courant (style + contenu) et le compose sur l
 canvas de prévisualisation. L'export suit le même pipeline de rendu, garantissant
 la **parité preview/export** — [ADR-0010](./ADR/0010-preview-export-pipeline-split.md).
 
-Les capacités Skia exploitées en V1 :
+Les capacités Skia exploitées :
 
 | Fonctionnalité | Usage |
 |---|---|
@@ -89,7 +89,7 @@ Les types `TextStyle` et `TextAnimation` sont définis dans
 ```ts
 // Crée un nouveau TextObject sur la timeline avec style et position initiaux
 interface CreateTextCommand {
-  type: "text:create";
+  type: "text.create";
   payload: {
     content: string;
     style: Partial<TextStyle>;      // fusionné avec les defaults du style prédéfini
@@ -103,7 +103,7 @@ interface CreateTextCommand {
 
 // Met à jour le contenu ou la position d'un TextObject existant
 interface UpdateTextCommand {
-  type: "text:update";
+  type: "text.update";
   payload: {
     id: string;
     content?: string;
@@ -116,7 +116,7 @@ interface UpdateTextCommand {
 
 // Applique un TextStyle (partiel ou complet) à un TextObject
 interface StyleTextCommand {
-  type: "text:style";
+  type: "text.style";
   payload: {
     id: string;
     style: Partial<TextStyle>;
@@ -125,7 +125,7 @@ interface StyleTextCommand {
 
 // Assigne ou retire une animation d'entrée/sortie
 interface AnimateTextCommand {
-  type: "text:animate";
+  type: "text.animate";
   payload: {
     id: string;
     animation: TextAnimation | null;
@@ -134,7 +134,7 @@ interface AnimateTextCommand {
 
 // Supprime un TextObject de la timeline
 interface DeleteTextCommand {
-  type: "text:delete";
+  type: "text.delete";
   payload: { id: string };
 }
 
@@ -269,7 +269,7 @@ La configuration du Text Engine passe par `config.fonts`
 ```
 
 Le Text Engine est activé dès que la track `text` du projet contient au moins un
-objet, ou que l'intégrateur appelle `text:create`. Il n'est pas conditionné par un
+objet, ou que l'intégrateur appelle `text.create`. Il n'est pas conditionné par un
 feature flag — [ADR-0009](./ADR/0009-headless-first-config-layers.md).
 
 Mode **headless** : l'intégrateur peut piloter le Text Engine via les commandes

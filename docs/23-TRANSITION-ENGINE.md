@@ -34,7 +34,7 @@ La durée `durationMs` est soustraite symétriquement à la région de sortie de
 la région d'entrée de B : chaque clip « prête » la moitié de la durée à l'overlap.
 Les clips doivent donc avoir une durée trimée supérieure à `durationMs / 2`.
 
-### Transitions disponibles en V1
+### Transitions disponibles (catalogue intégré)
 
 | Identifiant | Description |
 |-------------|-------------|

@@ -104,7 +104,7 @@ Les types `FilterObject` et `FilterParams` sont définis dans
 ```ts
 // Applique un filtre à un objet média existant (photo ou vidéo)
 interface CreateFilterCommand {
-  type: "filter:create";
+  type: "filter.create";
   payload: {
     targetId: string;         // id du VideoObject ou ImageObject cible
     filterId: string;         // clé du catalogue (ex. "cinema-drama")
@@ -115,7 +115,7 @@ interface CreateFilterCommand {
 
 // Met à jour l'intensité ou les paramètres d'un FilterObject existant
 interface UpdateFilterCommand {
-  type: "filter:update";
+  type: "filter.update";
   payload: {
     id: string;               // id du FilterObject
     intensity?: number;
@@ -125,7 +125,7 @@ interface UpdateFilterCommand {
 
 // Retire le filtre (supprime le FilterObject de la track filter)
 interface DeleteFilterCommand {
-  type: "filter:delete";
+  type: "filter.delete";
   payload: { id: string };
 }
 ```
@@ -170,7 +170,7 @@ await editor.loadProject(project);
 
 // Applique le filtre Drama à une vidéo existante, à 70% d'intensité
 editor.commandBus.dispatch({
-  type: "filter:create",
+  type: "filter.create",
   payload: {
     targetId: "video-clip-01",
     filterId: "cinema-drama",
@@ -181,7 +181,7 @@ editor.commandBus.dispatch({
 
 // Réduit l'intensité en temps réel (ex. slider UI)
 editor.commandBus.dispatch({
-  type: "filter:update",
+  type: "filter.update",
   payload: { id: "filter-01", intensity: 0.4 },
 });
 ```
@@ -220,8 +220,8 @@ editor.commandBus.dispatch({
 ```
 
 Le Filter Engine est activé dès qu'un `FilterObject` est présent dans la track
-`filter`, ou que `filter:create` est dispatché. Il n'est pas conditionné par un
-feature flag global en V1 — [ADR-0009](./ADR/0009-headless-first-config-layers.md).
+`filter`, ou que `filter.create` est dispatché. Il n'est pas conditionné par un
+feature flag global — [ADR-0009](./ADR/0009-headless-first-config-layers.md).
 
 ## Capacités avancées
 

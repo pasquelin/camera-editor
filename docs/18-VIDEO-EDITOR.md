@@ -26,12 +26,12 @@ produit le fichier final. Cette séparation est structurelle et non contournable
 ```
 Project
  └── Timeline
-      ├── VideoTrack 0  (max 3)
+      ├── VideoTrack 0  (3 par défaut, configurable)
       │    ├── VideoObject A  { trimIn, trimOut, speed, reversed, … }
       │    └── VideoObject B
       ├── VideoTrack 1
       ├── VideoTrack 2
-      ├── AudioTrack 0  (max 5)
+      ├── AudioTrack 0  (5 par défaut, configurable)
       ├── AudioTrack 1
       …
       └── AudioTrack 4
@@ -48,16 +48,16 @@ Project
 
 | Opération | Description | Namespace CommandBus |
 |-----------|-------------|---------------------|
-| **Trim** | Définit `trimIn` et `trimOut` (ms dans le clip source) sans couper le fichier. Non destructif. | `video:trim` |
-| **Split** | Coupe un clip en deux `VideoObject` au timecode indiqué. Le timecode est dans l'espace de la **timeline** (pas du clip source). Précision minimale de 100 ms par rapport aux bords du clip. | `video:split` |
-| **Merge** | Fusionne deux clips contigus sur le même track en un seul `VideoObject` (annule un split précédent). | `video:merge` |
-| **Reverse** | Inverse la lecture du clip (`VideoObject.reversed = true`). Attribut de rendu, pas un re-encode. | `video:reverse` |
-| **Speed** | Modifie `VideoObject.speed` parmi les valeurs autorisées. Répercuté sur la durée occupée dans la timeline. | `video:speed` |
-| **Mute** | Coupe l'audio natif du clip (`VideoObject.muted = true`) sans toucher les pistes audio séparées. | `video:mute` |
-| **Cover** | Sélectionne la frame vignette (`VideoObject.coverTimeMs`) utilisée dans les aperçus et miniatures. | `video:cover` |
-| **Create** | Ajoute un nouveau `VideoObject` dans un track à une position donnée. | `video:create` |
-| **Delete** | Supprime un `VideoObject` et compacte ou laisse un gap selon le mode du track. | `video:delete` |
-| **Update** | Met à jour un ou plusieurs attributs d'un `VideoObject` existant (position, taille, etc.). | `video:update` |
+| **Trim** | Définit `trimIn` et `trimOut` (ms dans le clip source) sans couper le fichier. Non destructif. | `video.trim` |
+| **Split** | Coupe un clip en deux `VideoObject` au timecode indiqué. Le timecode est dans l'espace de la **timeline** (pas du clip source). Précision minimale de 100 ms par rapport aux bords du clip. | `video.split` |
+| **Merge** | Fusionne deux clips contigus sur le même track en un seul `VideoObject` (annule un split précédent). | `video.merge` |
+| **Reverse** | Inverse la lecture du clip (`VideoObject.reversed = true`). Attribut de rendu, pas un re-encode. | `video.reverse` |
+| **Speed** | Modifie `VideoObject.speed` parmi les valeurs autorisées. Répercuté sur la durée occupée dans la timeline. | `video.speed` |
+| **Mute** | Coupe l'audio natif du clip (`VideoObject.muted = true`) sans toucher les pistes audio séparées. | `video.mute` |
+| **Cover** | Sélectionne la frame vignette (`VideoObject.coverTimeMs`) utilisée dans les aperçus et miniatures. | `video.cover` |
+| **Create** | Ajoute un nouveau `VideoObject` dans un track à une position donnée. | `video.create` |
+| **Delete** | Supprime un `VideoObject` et compacte ou laisse un gap selon le mode du track. | `video.delete` |
+| **Update** | Met à jour un ou plusieurs attributs d'un `VideoObject` existant (position, taille, etc.). | `video.update` |
 
 #### Valeurs de vitesse autorisées
 
@@ -179,16 +179,16 @@ function useVideoEditor(editor: Editor): VideoEditorController;
 ```ts
 // inféré (hors brief) — union des commandes du domaine vidéo
 type VideoCommand =
-  | { type: 'video:create';  payload: { object: VideoObject; trackIndex: number; positionMs: number } }
-  | { type: 'video:update';  payload: { objectId: string; patch: Partial<VideoObject> } }
-  | { type: 'video:trim';    payload: TrimOptions }
-  | { type: 'video:split';   payload: SplitOptions }
-  | { type: 'video:merge';   payload: MergeOptions }
-  | { type: 'video:delete';  payload: { objectId: string } }
-  | { type: 'video:reverse'; payload: { objectId: string; reversed: boolean } }
-  | { type: 'video:speed';   payload: SpeedOptions }
-  | { type: 'video:mute';    payload: { objectId: string; muted: boolean } }
-  | { type: 'video:cover';   payload: CoverOptions };
+  | { type: 'video.create';  payload: { object: VideoObject; trackIndex: number; positionMs: number } }
+  | { type: 'video.update';  payload: { objectId: string; patch: Partial<VideoObject> } }
+  | { type: 'video.trim';    payload: TrimOptions }
+  | { type: 'video.split';   payload: SplitOptions }
+  | { type: 'video.merge';   payload: MergeOptions }
+  | { type: 'video.delete';  payload: { objectId: string } }
+  | { type: 'video.reverse'; payload: { objectId: string; reversed: boolean } }
+  | { type: 'video.speed';   payload: SpeedOptions }
+  | { type: 'video.mute';    payload: { objectId: string; muted: boolean } }
+  | { type: 'video.cover';   payload: CoverOptions };
 ```
 
 > Toutes ces commandes sont undo-able via le mécanisme standard du CommandBus.
@@ -228,7 +228,7 @@ type VideoCommand =
 
 ## Décisions liées
 
-- [ADR-0007](./ADR/0007-mutations-commandbus-undo.md) — mutations via CommandBus, undo/redo, namespaces `video:*`.
+- [ADR-0007](./ADR/0007-mutations-commandbus-undo.md) — mutations via CommandBus, undo/redo, namespaces `video.*`.
 - [ADR-0009](./ADR/0009-headless-first-config-layers.md) — flags `enableVideoEditor`, slots, `useVideoEditor`.
 - [ADR-0010](./ADR/0010-preview-export-pipeline-split.md) — le Video Editor pilote la preview via Runtime, jamais l'export directement.
 - [ADR-0003](./ADR/0003-rendering-skia-vs-native-video.md) — rendu des frames vidéo via AVPlayer / ExoPlayer dans le PreviewRenderer.

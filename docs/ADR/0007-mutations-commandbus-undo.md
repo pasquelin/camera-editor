@@ -14,8 +14,7 @@ projet directement rendrait l'undo et le débogage impossibles.
 ## Décision
 
 **Toute** mutation du projet passe par un **CommandBus**. Chaque commande implémente
-`execute(context)` et `undo(context)`. Le bus tient un `undoStack` (max **50**,
-limite V1) et un `redoStack`. Les opérations destructives (split, merge, reverse)
+`execute(context)` et `undo(context)`. Le bus tient un `undoStack` (taille configurable, **50 par défaut** via `config.history.undoStackSize`) et un `redoStack`. Les opérations destructives (split, merge, reverse)
 prennent un **snapshot** du `ProjectManager` avant exécution. Les opérations de
 preview (seek, zoom) ne sont **pas** enregistrées.
 

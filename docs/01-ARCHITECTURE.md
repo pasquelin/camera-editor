@@ -164,17 +164,19 @@ licensing / security ──(injectés)──▶ core
 Toutes les mutations passent par ces namespaces. Un plugin en ajoute via
 `registerCommand`. → [ADR-0007](./ADR/0007-mutations-commandbus-undo.md).
 
-| Namespace  | Commandes |
-|------------|-----------|
-| `video`    | create, update, trim, split, merge, delete, reverse, speed |
-| `image`    | create, update, crop, delete |
-| `text`     | create, update, style, animate, delete |
-| `sticker`  | create, update, animate, delete |
-| `audio`    | create, update, trim, volume, fade, delete |
-| `filter`   | create, update, delete |
-| `project`  | save, load, export, reset |
-| `timeline` | seek, zoom, snap |
-| `asset`    | import, delete, cache |
+| Namespace    | Commandes |
+|--------------|-----------|
+| `video`      | create, update, trim, split, merge, delete, reverse, speed, mute, cover |
+| `image`      | create, update, crop, delete |
+| `text`       | create, update, style, animate, delete |
+| `sticker`    | create, update, animate, delete |
+| `audio`      | create, update, trim, volume, fade, delete |
+| `filter`     | create, update, delete |
+| `photo`      | crop, rotate, flipH, flipV, resize, draw, clearDrawing |
+| `transition` | set, update, remove |
+| `project`    | save, load, export, reset |
+| `timeline`   | seek, zoom, snap |
+| `asset`      | import, delete, cache |
 
 API : `editor.execute(command, payload)`, `editor.undo()`, `editor.redo()`.
 Stacks `undoStack` / `redoStack` ; snapshot avant opération destructive ;

@@ -117,14 +117,14 @@ function useCameraController(editor: Editor): CameraController;
 
 > **Note** : `ImageObject` et `VideoObject` sont définis dans
 > [02-PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md). Le `CameraController` ci-dessus
-> est inféré ; il sera validé lors de l'implémentation Phase 2.
+> est inféré ; il sera validé lors de l'implémentation du Jalon 2 (cf. [10-ROADMAP](./10-ROADMAP.md)).
 
 ### Flux de production d'un clip
 
 ```
 CameraController.stopRecording()
   → VideoObject { uri, durationMs, width, height, sessionId, … }
-  → CommandBus.dispatch("project:addObject", { object: VideoObject })
+  → CommandBus.dispatch("video.create", { object: VideoObject, trackIndex: 0, positionMs: 0 })
   → Timeline.addClip(videoObject, trackIndex)
 ```
 

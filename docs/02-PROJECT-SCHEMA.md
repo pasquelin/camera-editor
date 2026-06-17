@@ -164,7 +164,7 @@ interface ObjectRegistry {
 }
 ```
 
-Enregistrements built-in (V1) :
+Enregistrements built-in :
 
 ```ts
 registry.register("video",   VideoObjectDefinition);
@@ -239,9 +239,6 @@ interface ProjectManager {
   le modèle via `ObjectRegistry.register` sans modifier le Core.
 - `aspectRatio` est un paramètre de projet, exposé dans la config de création
   (cf. [12-CONFIGURATION](./12-CONFIGURATION.md)).
-
-## Configuration
-
 - `maxVideoTracks` : 3 par défaut, configurable via `config.limits`
   (appliqué à la création/insertion, pas au schéma JSON lui-même).
 - `maxAudioTracks` : 5 par défaut, configurable via `config.limits`.

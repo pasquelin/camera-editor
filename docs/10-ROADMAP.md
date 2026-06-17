@@ -1,35 +1,72 @@
 # 10 — Roadmap
 
-> **Statut : 🟡 planifié — Passe 4.** Phases d'exécution figées ci-dessous.
+> **Statut : ✅ stable.**
 
 ## Purpose
 
-Ordonner la construction du SDK en phases livrables, du Core vers la distribution.
-Chaque phase est autonome et testable.
+Donner l'**ordre de construction** du SDK : la séquence dans laquelle on bâtit les
+modules pour livrer **une seule release V1 complète**. Ce sont des jalons de
+construction (par quoi on commence), **pas** un découpage de fonctionnalités par
+version — tout est livré en V1.
 
-## Phases
+## Concepts
 
-### Phase 0 — Core
+### Pourquoi un ordre
+
+Chaque jalon s'appuie sur le précédent : le Core avant tout, le rendu avant l'édition,
+le Runtime avant la vidéo. L'ordre minimise les dépendances non satisfaites et permet
+de tester chaque couche dès qu'elle existe.
+
+```
+Core ─▶ Photo ─▶ Caméra ─▶ Vidéo ─▶ Distribution
+(socle) (rendu  (capture)  (temps   (packaging,
+        statique)          réel)     packs, docs)
+```
+
+## Jalons de construction
+
+### Jalon 0 — Core
 ProjectManager + SchemaRegistry · CommandBus + Undo/Redo · EventBus ·
 ObjectRegistry (types built-in) · PluginManager · AssetManager.
+→ [01-ARCHITECTURE](./01-ARCHITECTURE.md), [02-PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md).
 
-### Phase 1 — Photo
+### Jalon 1 — Photo
 PreviewRenderer (Skia, calques statiques) · Photo Editor (crop, rotate, flip, draw) ·
 Text Engine + Font Manager · Sticker Engine · Filter Engine (photo) · ExportRenderer
 (JPEG, PNG) · LicenseManager + interface de validation.
+→ [04-RENDERER](./04-RENDERER.md), [17-PHOTO-EDITOR](./17-PHOTO-EDITOR.md),
+[19-TEXT-ENGINE](./19-TEXT-ENGINE.md), [20-STICKER-ENGINE](./20-STICKER-ENGINE.md),
+[21-FILTER-ENGINE](./21-FILTER-ENGINE.md), [07-LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md).
 
-### Phase 2 — Caméra
+### Jalon 2 — Caméra
 Camera Module (photo + vidéo) · capture multi-clips.
+→ [16-CAMERA](./16-CAMERA.md), [ADR-0012](./ADR/0012-camera-vision-camera.md).
 
-### Phase 3 — Vidéo
-Runtime (play, pause, seek, clock) · Video Editor (trim, split, merge, speed,
-reverse) · Timeline (multi-tracks, drag, snap, seek) · PreviewRenderer vidéo ·
+### Jalon 3 — Vidéo
+Runtime (play, pause, seek, clock) · Video Editor (trim, split, merge, speed, reverse) ·
+Timeline (multi-tracks, drag, snap, seek) · PreviewRenderer vidéo (synchro clock) ·
 Audio Engine · Transition Engine · ExportRenderer vidéo (MP4, MOV) · Security Layer.
+→ [03-RUNTIME](./03-RUNTIME.md), [05-TIMELINE](./05-TIMELINE.md),
+[18-VIDEO-EDITOR](./18-VIDEO-EDITOR.md), [22-AUDIO-ENGINE](./22-AUDIO-ENGINE.md),
+[23-TRANSITION-ENGINE](./23-TRANSITION-ENGINE.md), [09-EXPORT-ENGINE](./09-EXPORT-ENGINE.md).
 
-### Phase 4 — Distribution
-ResourcePack System · Music Library intégrée · UI theming complet · CLI
-`media-studio` · Documentation Docusaurus · Publication npm (`@media-studio/*`) ·
+### Jalon 4 — Distribution
+ResourcePack System · Music Library intégrée · UI theming complet · CLI `media-studio` ·
+Documentation complète (Docusaurus) · Publication npm (`@media-studio/*`) ·
 Exemples d'intégration.
+→ [08-ASSET-MANAGER](./08-ASSET-MANAGER.md), [24-UI-COMPONENTS](./24-UI-COMPONENTS.md),
+[25-DEVELOPER-DOCS](./25-DEVELOPER-DOCS.md), [11-MONOREPO](./11-MONOREPO.md).
+
+## Configuration
+
+L'ordre est un guide de construction, pas une contrainte de livraison : un intégrateur
+reçoit l'ensemble du SDK et active ce dont il a besoin via les capability flags
+([12-CONFIGURATION](./12-CONFIGURATION.md)).
+
+## Décisions liées
+
+- [ADR-0007](./ADR/0007-mutations-commandbus-undo.md) — le Core (Jalon 0) en premier.
+- [ADR-0010](./ADR/0010-preview-export-pipeline-split.md) — rendu avant édition.
 
 ## Cross-refs
 

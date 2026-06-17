@@ -11,7 +11,7 @@ Les documents sont numérotés par couche de profondeur, du *pourquoi* vers le *
 
 | # | Document | Rôle | Statut |
 |---|----------|------|--------|
-| 00 | [VISION](./00-VISION.md) | Mission, positionnement, principes, non-goals V1 | ✅ stable |
+| 00 | [VISION](./00-VISION.md) | Mission, positionnement, principes | ✅ stable |
 | 01 | [ARCHITECTURE](./01-ARCHITECTURE.md) | Couches, règles de dépendances, flux de données | ✅ stable |
 | 02 | [PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md) | Modèle de données, types d'objets, migrations | ✅ stable |
 | 03 | [RUNTIME](./03-RUNTIME.md) | Orchestrateur play/pause/seek, clock partagée | ✅ stable |
@@ -21,11 +21,11 @@ Les documents sont numérotés par couche de profondeur, du *pourquoi* vers le *
 | 07 | [LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md) | Plans, validation, expiration gracieuse | ✅ stable |
 | 08 | [ASSET-MANAGER](./08-ASSET-MANAGER.md) | Assets, cache, ResourcePacks | ✅ stable |
 | 09 | [EXPORT-ENGINE](./09-EXPORT-ENGINE.md) | Pipeline d'export, formats, codecs | ✅ stable |
-| 10 | [ROADMAP](./10-ROADMAP.md) | Phases 0→4 d'exécution | 🟡 passe 4 |
+| 10 | [ROADMAP](./10-ROADMAP.md) | Jalons de construction (ordre de build) | ✅ stable |
 | 11 | [MONOREPO](./11-MONOREPO.md) | pnpm + Turborepo, packages, publication | ✅ stable |
 | 12 | [CONFIGURATION](./12-CONFIGURATION.md) | **Contrat de paramétrage complet** | ✅ stable |
 | 13 | [STATE-DATAFLOW](./13-STATE-DATAFLOW.md) | Zustand, Reanimated, source de vérité | ✅ stable |
-| 14 | [TESTING](./14-TESTING.md) | Stratégie de test cross-packages | 🟡 passe 4 |
+| 14 | [TESTING](./14-TESTING.md) | Stratégie de test cross-packages | ✅ stable |
 | 15 | [NATIVE-CONFIG-PLUGINS](./15-NATIVE-CONFIG-PLUGINS.md) | Modules natifs, config plugins, New Arch | ✅ stable |
 | 16 | [CAMERA](./16-CAMERA.md) | Capture photo/vidéo, ratios, vision-camera | ✅ stable |
 | 17 | [PHOTO-EDITOR](./17-PHOTO-EDITOR.md) | Crop, rotate, dessin, overlays, export image | ✅ stable |
@@ -36,7 +36,7 @@ Les documents sont numérotés par couche de profondeur, du *pourquoi* vers le *
 | 22 | [AUDIO-ENGINE](./22-AUDIO-ENGINE.md) | Trim, fades, mix + Music Library | ✅ stable |
 | 23 | [TRANSITION-ENGINE](./23-TRANSITION-ENGINE.md) | Transitions entre clips contigus | ✅ stable |
 | 24 | [UI-COMPONENTS](./24-UI-COMPONENTS.md) | Catalogue des composants par défaut + theming | ✅ stable |
-| 25 | [DEVELOPER-DOCS](./25-DEVELOPER-DOCS.md) | Docusaurus, TSDoc, CLI, distribution | 🟡 passe 4 |
+| 25 | [DEVELOPER-DOCS](./25-DEVELOPER-DOCS.md) | Docusaurus, TSDoc, CLI, distribution | ✅ stable |
 
 Les [ADR](./ADR/) (Architecture Decision Records) capturent les **décisions
 structurantes** et leurs alternatives écartées. Voir [ADR/0000-template](./ADR/0000-template.md).

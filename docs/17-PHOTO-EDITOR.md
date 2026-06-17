@@ -150,13 +150,13 @@ function usePhotoEditor(editor: Editor): PhotoEditorController;
 ```ts
 // inféré (hors brief) — namespaces de commandes dispatché vers le CommandBus
 type PhotoCommand =
-  | { type: 'photo:crop';    payload: { objectId: string; rect: CropRect } }
-  | { type: 'photo:rotate';  payload: { objectId: string; degrees: number } }
-  | { type: 'photo:flipH';   payload: { objectId: string } }
-  | { type: 'photo:flipV';   payload: { objectId: string } }
-  | { type: 'photo:resize';  payload: { objectId: string; width: number; height: number } }
-  | { type: 'photo:draw';    payload: { objectId: string; command: DrawCommand } }
-  | { type: 'photo:clearDrawing'; payload: { objectId: string } };
+  | { type: 'photo.crop';    payload: { objectId: string; rect: CropRect } }
+  | { type: 'photo.rotate';  payload: { objectId: string; degrees: number } }
+  | { type: 'photo.flipH';   payload: { objectId: string } }
+  | { type: 'photo.flipV';   payload: { objectId: string } }
+  | { type: 'photo.resize';  payload: { objectId: string; width: number; height: number } }
+  | { type: 'photo.draw';    payload: { objectId: string; command: DrawCommand } }
+  | { type: 'photo.clearDrawing'; payload: { objectId: string } };
 ```
 
 > Toutes ces commandes sont undo-able via le mécanisme standard du CommandBus.

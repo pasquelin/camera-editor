@@ -38,7 +38,7 @@ Les gestes peuvent être combinés simultanément via `Gesture.Simultaneous` (pa
 1. **Pendant le geste** : les `SharedValue` `x`, `y`, `rotation`, `scale` sont mises
    à jour en worklet — aucune commande n'est émise, le store n'est pas modifié.
 2. **En fin de geste** (`onEnd`) : un seul appel `runOnJS` déclenche une commande
-   `sticker:update` via le CommandBus, qui crée un snapshot undo et met à jour le
+   `sticker.update` via le CommandBus, qui crée un snapshot undo et met à jour le
    store.
 
 Ce pattern garantit que l'undo/redo opère sur des états discrets (positions finales),
@@ -79,7 +79,7 @@ Les types `StickerObject` et `StickerAnimation` sont définis dans
 ```ts
 // Ajoute un StickerObject sur la timeline
 interface CreateStickerCommand {
-  type: "sticker:create";
+  type: "sticker.create";
   payload: {
     source: string;                   // URI local ou chemin bundle SDK
     format: "png" | "svg" | "gif" | "lottie";
@@ -95,7 +95,7 @@ interface CreateStickerCommand {
 // Met à jour la position, les dimensions ou l'opacité d'un StickerObject
 // Typiquement émis en fin de geste (onEnd Reanimated)
 interface UpdateStickerCommand {
-  type: "sticker:update";
+  type: "sticker.update";
   payload: {
     id: string;
     x?: number;
@@ -110,7 +110,7 @@ interface UpdateStickerCommand {
 
 // Assigne ou retire une animation d'entrée/sortie de scène
 interface AnimateStickerCommand {
-  type: "sticker:animate";
+  type: "sticker.animate";
   payload: {
     id: string;
     animation: StickerAnimation | null;
@@ -119,7 +119,7 @@ interface AnimateStickerCommand {
 
 // Supprime un StickerObject de la timeline
 interface DeleteStickerCommand {
-  type: "sticker:delete";
+  type: "sticker.delete";
   payload: { id: string };
 }
 ```
@@ -143,7 +143,7 @@ function useStickerGesture(id: string, commandBus: CommandBus) {
     .onEnd(() => {
       // Commit atomique en JS thread — crée le snapshot undo
       runOnJS(commandBus.dispatch)({
-        type: "sticker:update",
+        type: "sticker.update",
         payload: { id, x: x.value, y: y.value },
       });
     });
@@ -156,7 +156,7 @@ function useStickerGesture(id: string, commandBus: CommandBus) {
 ## Configuration
 
 Le Sticker Engine ne dépend d'aucun feature flag — il est actif dès qu'un
-`StickerObject` est présent dans la track `sticker`, ou que `sticker:create` est
+`StickerObject` est présent dans la track `sticker`, ou que `sticker.create` est
 appelé. L'approche est **headless-first** :
 [ADR-0009](./ADR/0009-headless-first-config-layers.md).
 

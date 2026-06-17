@@ -117,11 +117,8 @@ les deux pipelines partagent la *spécification*, pas l'*implémentation*.
   l'UI par défaut. → [12-CONFIGURATION](./12-CONFIGURATION.md).
 - `ExportConfig` (format, résolution, fps, bitrates, codec, quality) :
   [09-EXPORT-ENGINE](./09-EXPORT-ENGINE.md).
-
-## Configuration
-
 - Preview cible **30 fps** par défaut, configurable via `config.renderer.previewFps`.
-- Export **H.264** inclus ; **H.265** et **4K** disponibles sur le plan Pro.
+- Export **H.264** inclus par défaut ; **H.265** et **4K** disponibles sur le plan Pro.
   → [07-LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md), [12-CONFIGURATION](./12-CONFIGURATION.md).
 
 ## Décisions liées

@@ -40,10 +40,10 @@ dans le schéma de projet ([02-PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md)).
 
 | Fonction | Valeurs |
 |----------|---------|
-| Trim | `inMs` / `outMs` — fenêtre de lecture dans le fichier source. |
+| Trim | `trim.start` / `trim.end` — fenêtre de lecture dans le fichier source (ms). |
 | Volume | `0` (muet) à `2` (double gain). |
-| Fade in | durée en ms, appliqué depuis le début de la plage trimée. |
-| Fade out | durée en ms, appliqué jusqu'à la fin de la plage trimée. |
+| Fade in | `fadeIn` — durée en ms, appliqué depuis le début de la plage trimée. |
+| Fade out | `fadeOut` — durée en ms, appliqué jusqu'à la fin de la plage trimée. |
 | Speed | `0.5×` à `2×` (le pitch suit par défaut). |
 | Loop | booléen — reboucle automatiquement tant que le playhead est dans la région de la piste. |
 
@@ -90,7 +90,7 @@ Toutes les modifications d'une piste audio passent par le CommandBus
 |----------|-------|
 | `audio.create` | Ajoute une piste audio au projet. |
 | `audio.update` | Met à jour les propriétés d'une piste (volume, speed…). |
-| `audio.trim` | Ajuste `inMs` / `outMs` d'une piste. |
+| `audio.trim` | Ajuste `trim.start` / `trim.end` d'une piste. |
 | `audio.volume` | Modifie le gain d'une piste. |
 | `audio.fade` | Configure le fade in et/ou fade out d'une piste. |
 | `audio.delete` | Supprime une piste du projet. |
@@ -100,19 +100,16 @@ Toutes les modifications d'une piste audio passent par le CommandBus
 ```ts
 // AudioObject — forme canonique définie dans 02-PROJECT-SCHEMA.
 // Reportez-vous à ce fichier pour la définition autoritative.
-// Extrait indicatif :
+// Extrait indicatif (aligné sur la source de vérité) :
 interface AudioObject {
   id: string;
   role: "background" | "voiceover" | "sfx";
-  source: { type: "local"; uri: string }
-        | { type: "remote"; url: string }
-        | { type: "musicPack"; packId: string; trackId: string };
-  startMs: number;          // position sur la timeline
-  inMs: number;             // trim — début dans le fichier source
-  outMs: number;            // trim — fin dans le fichier source
+  source: string;                            // URI local (résolu par l'AssetManager)
+  startTime: number;        // ms — position sur la timeline (hérité de EditorObject)
+  trim: { start: number; end: number };      // ms dans le fichier source
   volume: number;           // 0–2
-  fadeInMs: number;
-  fadeOutMs: number;
+  fadeIn: number;           // ms
+  fadeOut: number;          // ms
   speed: number;            // 0.5–2.0
   loop: boolean;
 }
@@ -122,7 +119,7 @@ interface AudioMixer {
   addTrack(obj: AudioObject): void;
   removeTrack(id: string): void;
   setVolume(id: string, volume: number): void;    // 0–2
-  fade(id: string, params: { inMs?: number; outMs?: number }): void;
+  fade(id: string, params: { fadeIn?: number; fadeOut?: number }): void;
   mixdown(): Promise<string>;   // URI du fichier mixé (usage export uniquement)
 }
 
