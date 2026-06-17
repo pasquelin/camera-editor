@@ -20,6 +20,7 @@ export interface MediaStudioTheme {
 
 const SPACING_BASE = 8;
 const spacing = (units: number): number => units * SPACING_BASE;
+const RADII = { sm: 8, md: 12, lg: 16 } as const;
 
 export const darkTheme: MediaStudioTheme = {
   colors: {
@@ -29,7 +30,7 @@ export const darkTheme: MediaStudioTheme = {
     textMuted: "rgba(255,255,255,0.6)",
     accent: "#0a84ff",
   },
-  radii: { sm: 8, md: 12, lg: 16 },
+  radii: RADII,
   spacing,
 };
 
@@ -41,7 +42,7 @@ export const lightTheme: MediaStudioTheme = {
     textMuted: "#687076",
     accent: "#0a84ff",
   },
-  radii: { sm: 8, md: 12, lg: 16 },
+  radii: RADII,
   spacing,
 };
 
