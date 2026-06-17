@@ -127,6 +127,19 @@ interface AudioMixer {
   mixdown(): Promise<string>;   // URI du fichier mixé (usage export uniquement)
 }
 
+// Source sélectionnable pour créer une piste audio (≠ AudioObject, qui est l'objet dans le projet)
+type AudioSource =
+  | { type: "local"; uri: string }
+  | { type: "remote"; url: string }
+  | { type: "musicTrack"; trackId: string };
+
+// Bibliothèque musicale remplaçable (config.musicLibrary)
+interface MusicSource {
+  categories: string[];
+  list(category?: string): Promise<MusicTrack[]>;
+  get(trackId: string): Promise<MusicTrack>;
+}
+
 // Music Library (inféré — hors brief)
 interface MusicLibrary {
   categories: string[];   // ["Pop","Lo-Fi","Hip-Hop","Electronic","Corporate","Cinematic","Nature"]

@@ -32,7 +32,7 @@ produit le fichier final. Cette séparation est structurelle et non contournable
 Project
  └── Timeline
       ├── VideoTrack 0  (3 par défaut, configurable)
-      │    ├── VideoObject A  { trimIn, trimOut, speed, reversed, … }
+      │    ├── VideoObject A  { trim: { start, end }, speed, reversed, … }
       │    └── VideoObject B
       ├── VideoTrack 1
       ├── VideoTrack 2
@@ -53,13 +53,13 @@ Project
 
 | Opération | Description | Namespace CommandBus |
 |-----------|-------------|---------------------|
-| **Trim** | Définit `trimIn` et `trimOut` (ms dans le clip source) sans couper le fichier. Non destructif. | `video.trim` |
+| **Trim** | Définit `trim.start` et `trim.end` (ms dans le clip source) sans couper le fichier. Non destructif. | `video.trim` |
 | **Split** | Coupe un clip en deux `VideoObject` au timecode indiqué. Le timecode est dans l'espace de la **timeline** (pas du clip source). Précision minimale de 100 ms par rapport aux bords du clip. | `video.split` |
 | **Merge** | Fusionne deux clips contigus sur le même track en un seul `VideoObject` (annule un split précédent). | `video.merge` |
 | **Reverse** | Inverse la lecture du clip (`VideoObject.reversed = true`). Attribut de rendu, pas un re-encode. | `video.reverse` |
 | **Speed** | Modifie `VideoObject.speed` parmi les valeurs autorisées. Répercuté sur la durée occupée dans la timeline. | `video.speed` |
 | **Mute** | Coupe l'audio natif du clip (`VideoObject.muted = true`) sans toucher les pistes audio séparées. | `video.mute` |
-| **Cover** | Sélectionne la frame vignette (`VideoObject.coverTimeMs`) utilisée dans les aperçus et miniatures. | `video.cover` |
+| **Cover** | Sélectionne la frame vignette (`VideoObject.cover`, ms dans le clip source) utilisée dans les aperçus et miniatures. | `video.cover` |
 | **Create** | Ajoute un nouveau `VideoObject` dans un track à une position donnée. | `video.create` |
 | **Delete** | Supprime un `VideoObject` et compacte ou laisse un gap selon le mode du track. | `video.delete` |
 | **Update** | Met à jour un ou plusieurs attributs d'un `VideoObject` existant (position, taille, etc.). | `video.update` |
@@ -70,7 +70,7 @@ Project
 
 Toute valeur hors de cet ensemble est rejetée par le CommandBus avec une erreur
 de validation. Le facteur de vitesse influe sur la durée occupée dans la
-timeline : `durationOnTimeline = (trimOut - trimIn) / speed`.
+timeline : `durationOnTimeline = (trim.end - trim.start) / speed`.
 
 ### Timeline multi-tracks
 
@@ -110,7 +110,7 @@ const videoEditor = useVideoEditor(editor);
 const runtime    = useRuntime(editor);
 
 // Trim d'un clip
-videoEditor.trim({ objectId: 'clip-1', trimIn: 2000, trimOut: 15000 });
+videoEditor.trim({ objectId: 'clip-1', trim: { start: 2000, end: 15000 } });
 
 // Split au timecode courant
 videoEditor.split({ objectId: 'clip-1', atTimeMs: runtime.getCurrentTime() });
@@ -129,8 +129,10 @@ type SpeedFactor = 0.25 | 0.5 | 1 | 1.5 | 2 | 4;
 
 interface TrimOptions {
   objectId: string;
-  trimIn: number;   // ms dans le fichier source
-  trimOut: number;  // ms dans le fichier source, > trimIn
+  trim: {
+    start: number;  // ms dans le fichier source
+    end: number;    // ms dans le fichier source, > start
+  };
 }
 
 interface SplitOptions {
@@ -150,7 +152,7 @@ interface SpeedOptions {
 
 interface CoverOptions {
   objectId: string;
-  coverTimeMs: number; // ms dans le clip source, dans [trimIn, trimOut]
+  cover: number; // ms dans le clip source, dans [trim.start, trim.end]
 }
 
 // inféré (hors brief) — contrôleur headless Video Editor
@@ -246,6 +248,6 @@ type VideoCommand =
 - [04-RENDERER](./04-RENDERER.md) — pipeline de preview temps réel piloté par la clock Runtime.
 - [09-EXPORT-ENGINE](./09-EXPORT-ENGINE.md) — pipeline d'export final (encode, codecs, formats).
 - [23-TRANSITION-ENGINE](./23-TRANSITION-ENGINE.md) — transitions entre clips contigus (hors périmètre Video Editor).
-- [02-PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md) — `VideoObject` et ses attributs (`trim`, `speed`, `reversed`, `muted`) ; `trimIn`/`trimOut`/`coverTimeMs` sont les noms utilisés dans les commandes CommandBus (cf. interfaces TS ci-dessus).
+- [02-PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md) — `VideoObject` et ses attributs (`trim: { start, end }`, `cover`, `speed`, `reversed`, `muted`) ; source de vérité du schéma.
 - [12-CONFIGURATION](./12-CONFIGURATION.md) — flags `enableVideoEditor` et paramètres associés.
 - [24-UI-COMPONENTS](./24-UI-COMPONENTS.md) — `<VideoEditor />` et ses slots.

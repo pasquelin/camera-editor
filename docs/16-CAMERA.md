@@ -124,7 +124,7 @@ function useCameraController(editor: Editor): CameraController;
 ```
 CameraController.stopRecording()
   → VideoObject { uri, durationMs, width, height, sessionId, … }
-  → CommandBus.dispatch("video.create", { object: VideoObject, trackIndex: 0, positionMs: 0 })
+  → editor.execute("video.create", { object: VideoObject, trackIndex: 0, positionMs: 0 })
   → Timeline.addClip(videoObject, trackIndex)
 ```
 
@@ -152,9 +152,12 @@ le `CommandBus`, garantissant l'undo/redo et la cohérence du schéma.
 
 ### Slots et override UI
 
+Le slot `CameraView` remplace **tout l'écran caméra** (flux vidéo inclus), tandis que `CameraControls` est un **sous-slot** destiné aux seuls contrôles superposés (boutons capture, flash, zoom) sans toucher au flux lui-même.
+
 | Slot | Composant par défaut | Description |
 |------|----------------------|-------------|
-| `CameraControls` | Boutons flash, bascule, ratio, déclencheur | UI de contrôle superposée au flux vidéo. Remplaçable intégralement. |
+| `CameraView` | Écran caméra complet (flux + contrôles) | Remplace la totalité de l'écran caméra. |
+| `CameraControls` | Boutons flash, bascule, ratio, déclencheur | Sous-slot : UI de contrôle superposée au flux vidéo uniquement. Remplaçable indépendamment de `CameraView`. |
 | `CaptureButton` | Bouton rond, animation d'enregistrement | Déclencheur de capture photo ou démarrage/arrêt vidéo. |
 | `RatioSelector` | Sélecteur de ratio en barre horizontale | Permet à l'hôte d'injecter son propre sélecteur. |
 

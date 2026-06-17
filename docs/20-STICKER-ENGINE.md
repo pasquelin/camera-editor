@@ -128,7 +128,7 @@ interface DeleteStickerCommand {
 
 ```ts
 // inféré (hors brief) — illustration du pattern Reanimated → CommandBus
-function useStickerGesture(id: string, commandBus: CommandBus) {
+function useStickerGesture(id: string, editor: Editor) {
   const x = useSharedValue(0);
   const y = useSharedValue(0);
   const rotation = useSharedValue(0);
@@ -142,10 +142,7 @@ function useStickerGesture(id: string, commandBus: CommandBus) {
     })
     .onEnd(() => {
       // Commit atomique en JS thread — crée le snapshot undo
-      runOnJS(commandBus.dispatch)({
-        type: "sticker.update",
-        payload: { id, x: x.value, y: y.value },
-      });
+      runOnJS(editor.execute)("sticker.update", { id, x: x.value, y: y.value });
     });
 
   // Pinch (scale) et Rotation suivent le même pattern

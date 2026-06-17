@@ -112,11 +112,19 @@ interface CropRect {
   height: number; // [0, 1] normalisé
 }
 
-interface DrawStyle {
-  color: string;    // hex RGBA, ex. '#FF0000FF'
-  size: number;     // px, [1, 200]
-  opacity: number;  // [0, 1]
-}
+// Coordonnée 2D sur le canvas (pixels)
+interface Point { x: number; y: number }
+
+// Style appliqué aux outils de dessin vectoriel
+interface DrawStyle { color: string; size: number; opacity: number }  // opacity 0–1
+
+// Payload de la commande `photo.draw` — décrit un coup de pinceau ou une forme dessinée
+type DrawCommand =
+  | { tool: "brush";  path: Point[]; style: DrawStyle }
+  | { tool: "eraser"; path: Point[]; size: number }
+  | { tool: "rect";   from: Point; to: Point; style: DrawStyle; filled: boolean }
+  | { tool: "circle"; center: Point; radius: number; style: DrawStyle; filled: boolean }
+  | { tool: "line";   from: Point; to: Point; style: DrawStyle };
 
 type DrawTool =
   | { type: 'brush'; style: DrawStyle }

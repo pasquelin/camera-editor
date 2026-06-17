@@ -45,6 +45,15 @@ useFrameCallback ──▶ clock.value (SharedValue) ──▶ useAnimatedReacti
 Quatre stores, frontières nettes, jamais fusionnés :
 
 ```ts
+// Alias pour cohérence avec 02-PROJECT-SCHEMA (aspectRatio y est défini comme union littérale)
+type AspectRatio = "9:16" | "16:9" | "1:1" | "4:3";
+
+// Opaque alias — valeur concrète : identifiant d'outil (ex. "select", "crop", "draw")
+type ToolId = string;
+
+// Opaque alias — valeur concrète : identifiant de panneau (ex. "filters", "text", "audio")
+type PanelId = string;
+
 // 1) projectStore — miroir réactif du ProjectManager (lecture seule pour l'UI)
 interface ProjectStore {
   version: string;

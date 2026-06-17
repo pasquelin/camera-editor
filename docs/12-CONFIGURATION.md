@@ -31,7 +31,8 @@ Niveau 3 — Headless             zéro UI fournie : on pilote les controllers/h
 interface MediaStudioConfig {
   // Licence — optionnelle (open-core sans clé)
   licenseKey?: string;
-  offlineCache?: boolean;          // cache local de validation (TTL 7j)
+  offlineCache?: boolean;          // active le cache local de validation JWT
+  offlineCacheTtlDays?: number;    // TTL du cache hors-ligne, défaut : 7 jours
 
   // Adapters injectés (sinon valeurs Expo par défaut)
   storage?: StorageAdapter;        // défaut: expo-file-system + AsyncStorage
@@ -116,6 +117,26 @@ la capacité libre la plus proche, sans crash.
 ### Niveau 1 — Design tokens
 
 ```ts
+// Descripteur d'une police bundlée ou distante
+type FontSource =
+  | { kind: "bundled"; name: string; path: string }         // asset local
+  | { kind: "google";  family: string; weights?: number[] } // Google Fonts
+  | { kind: "url";     name: string; url: string };         // URL distante
+
+// MusicSource défini dans 22-AUDIO-ENGINE
+
+// Tokens typographiques d'une variante (body / title / caption)
+interface TextTokens {
+  fontFamily?: string;
+  fontSize: number;
+  fontWeight?: "400" | "500" | "600" | "700";
+  lineHeight?: number;
+  letterSpacing?: number;
+}
+
+// Jeu d'icônes remplaçable (chaque valeur = composant React Native)
+type IconSet = Record<string, ComponentType<{ size?: number; color?: string }>>;
+
 interface Theme {
   colors: {
     primary: string;

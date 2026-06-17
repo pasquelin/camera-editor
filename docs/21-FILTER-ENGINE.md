@@ -169,21 +169,15 @@ const editor = new Editor();
 await editor.loadProject(project);
 
 // Applique le filtre Drama à une vidéo existante, à 70% d'intensité
-editor.commandBus.dispatch({
-  type: "filter.create",
-  payload: {
-    targetId: "video-clip-01",
-    filterId: "cinema-drama",
-    intensity: 0.7,
-    params: { contrast: 0.2, temperature: -0.1 },
-  },
+editor.execute("filter.create", {
+  targetId: "video-clip-01",
+  filterId: "cinema-drama",
+  intensity: 0.7,
+  params: { contrast: 0.2, temperature: -0.1 },
 });
 
 // Réduit l'intensité en temps réel (ex. slider UI)
-editor.commandBus.dispatch({
-  type: "filter.update",
-  payload: { id: "filter-01", intensity: 0.4 },
-});
+editor.execute("filter.update", { id: "filter-01", intensity: 0.4 });
 ```
 
 ## Configuration

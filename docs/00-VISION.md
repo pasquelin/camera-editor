@@ -101,7 +101,7 @@ La vision « tout paramétrable » se concrétise par trois leviers, détaillés
 ## Paramètres par défaut (entièrement configurables)
 
 Le SDK livre **toutes** ses capacités dès la première version. Les valeurs ci-dessous
-sont des **défauts ajustables** par l'intégrateur (via `config.limits` / `config.renderer`),
+sont des **défauts ajustables** par l'intégrateur (via `config.limits` — `EditorLimits`),
 pas des plafonds imposés. → [12-CONFIGURATION](./12-CONFIGURATION.md).
 
 | Domaine | Valeur par défaut (configurable) |

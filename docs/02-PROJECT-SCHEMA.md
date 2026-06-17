@@ -34,7 +34,35 @@ interface Project {
     text: TextObject[];
     sticker: StickerObject[];
     filter: FilterObject[];
+    transitions: ClipJunction[];   // transitions entre clips contigus (cf. 23-TRANSITION-ENGINE)
   };
+}
+```
+
+### Transitions — forme stockée
+
+Les transitions sont persistées dans `tracks.transitions`. Le **catalogue** et le
+rendu sont décrits dans [23-TRANSITION-ENGINE](./23-TRANSITION-ENGINE.md) ; la **forme
+canonique stockée** est définie ici :
+
+```ts
+interface Transition {
+  // built-in (camelCase, cohérent avec TextAnimation) ou id d'un TransitionPack
+  type: "cut" | "fade" | "zoom"
+      | "slideUp" | "slideDown" | "slideLeft" | "slideRight"
+      | "blur" | "dissolve"
+      | (string & {});                 // transition fournie par un TransitionPack
+  durationMs: number;
+  easing?: "linear" | "easeIn" | "easeOut" | "easeInOut";
+}
+
+// Jointure entre deux clips contigus d'une même VideoTrack
+interface ClipJunction {
+  id: string;
+  trackId: string;        // VideoTrack concernée
+  clipAId: string;        // clip sortant
+  clipBId: string;        // clip entrant
+  transition: Transition;
 }
 ```
 
@@ -70,7 +98,7 @@ interface VideoObject extends EditorObject {
   trim: { start: number; end: number };
   crop: { x: number; y: number; width: number; height: number };
   speed: number;       // 0.25–4.0
-  volume: number;
+  volume: number;      // 0–1
   muted: boolean;
   reversed: boolean;
   cover?: number;      // timecode (ms) de la frame de couverture/vignette (fonction "cover")
@@ -151,6 +179,12 @@ interface FilterParams {
 ## L'ObjectRegistry — point d'extension
 
 ```ts
+// Alias opaque pour un JSON Schema standard (compatible AJV / Zod-to-JSON)
+type JSONSchema = Record<string, unknown>;
+
+// Copie immuable d'un Project utilisée par le CommandBus pour undo/redo
+type Snapshot = Readonly<Project>;
+
 interface ObjectDefinition {
   type: string;
   schema: JSONSchema;
@@ -246,7 +280,7 @@ interface ProjectManager {
 - `maxAudioTracks` : 5 par défaut, configurable via `config.limits`.
 - `VideoObject.speed` : plage `[0.25, 4.0]` par défaut, ajustable via configuration.
 - `AudioObject.speed` : plage `[0.5, 2.0]` par défaut, ajustable via configuration.
-- `undoStackSize` : 50 états par défaut, configurable via `config.history`.
+- `undoStackSize` : 50 états par défaut, configurable via `config.limits.undoStackSize` (`EditorLimits`).
   → [12-CONFIGURATION](./12-CONFIGURATION.md).
 
 ## Décisions liées

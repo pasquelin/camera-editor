@@ -158,6 +158,8 @@ aucune capacité n'est cachée derrière elle.
 ## Interfaces (TS)
 
 ```ts
+// AudioSource → 22-AUDIO-ENGINE ; VideoTrack → 05-TIMELINE ; ExportConfig → 09-EXPORT-ENGINE
+
 // Prop bags représentatifs — chaque composant expose le sien.
 // La liste exhaustive vit dans le package @media-studio/sdk/ui/types.
 
@@ -199,16 +201,18 @@ interface ToolbarProps {
 
 // Déclaration des slots — forme complète (inféré — hors brief)
 interface MediaStudioSlots {
-  CameraView?:    ComponentType<CameraViewProps>;
-  PhotoEditor?:   ComponentType<PhotoEditorProps>;
-  VideoEditor?:   ComponentType<VideoEditorProps>;
-  Timeline?:      ComponentType<TimelineProps>;
-  TextEditor?:    ComponentType<TextEditorProps>;
-  StickerPicker?: ComponentType<StickerPickerProps>;
-  FilterPicker?:  ComponentType<FilterPickerProps>;
-  AudioPicker?:   ComponentType<AudioPickerProps>;
-  ExportPanel?:   ComponentType<ExportPanelProps>;
-  Toolbar?:       ComponentType<ToolbarProps>;
+  CameraView?:      ComponentType<CameraViewProps>;
+  CameraControls?:  ComponentType<CameraControlsProps>;   // sous-slot des contrôles caméra
+  PhotoEditor?:     ComponentType<PhotoEditorProps>;
+  VideoEditor?:     ComponentType<VideoEditorProps>;
+  Timeline?:        ComponentType<TimelineProps>;
+  TextEditor?:      ComponentType<TextEditorProps>;
+  StickerPicker?:   ComponentType<StickerPickerProps>;
+  FilterPicker?:    ComponentType<FilterPickerProps>;
+  AudioPicker?:     ComponentType<AudioPickerProps>;
+  ExportPanel?:     ComponentType<ExportPanelProps>;
+  ExportProgress?:  ComponentType<ExportProgressProps>;   // vignette de progression globale
+  Toolbar?:         ComponentType<ToolbarProps>;
 }
 ```
 

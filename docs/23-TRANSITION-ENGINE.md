@@ -84,30 +84,11 @@ Toutes les opérations sur les transitions passent par le CommandBus
 ## Interfaces (TS)
 
 ```ts
-// Type principal d'une transition attachée à une jointure (inféré — hors brief)
-interface Transition {
-  type:
-    | "cut"
-    | "fade"
-    | "zoom"
-    | "slide-up"
-    | "slide-down"
-    | "slide-left"
-    | "slide-right"
-    | "blur"
-    | "dissolve"
-    | string;        // identifiant d'un TransitionPack
-  durationMs: number;
-  easing?: "linear" | "ease-in" | "ease-out" | "ease-in-out"; // inféré — hors brief
-}
-
-// Jointure entre deux clips sur la même VideoTrack (inféré — hors brief)
-interface ClipJunction {
-  trackId: string;
-  clipAId: string;   // clip sortant
-  clipBId: string;   // clip entrant
-  transition: Transition;
-}
+// `Transition` et `ClipJunction` sont la FORME STOCKÉE CANONIQUE — définis dans
+// 02-PROJECT-SCHEMA (persistés dans `Project.tracks.transitions`). Rappel :
+//   Transition  = { type, durationMs, easing? }   (type en camelCase : "slideUp"…)
+//   ClipJunction = { id, trackId, clipAId, clipBId, transition }
+// → ./02-PROJECT-SCHEMA.md . Ne pas les redéfinir ici.
 
 // Commandes passées au CommandBus
 interface TransitionSetCommand {

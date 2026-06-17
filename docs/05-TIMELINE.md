@@ -42,6 +42,18 @@ const msOf = (x: number)  => x / pxPerMs;    // clampé, puis snappé
 > Types **inférés** (au-delà du brief) pour expliciter le contrat de la Timeline.
 
 ```ts
+interface VideoTrack {
+  id: string;
+  index: number;            // ordre vertical (z-index)
+  clips: VideoObject[];     // clips de la piste, ordonnés dans le temps
+}
+
+interface AudioTrack {
+  id: string;
+  index: number;            // ordre vertical (z-index)
+  clips: AudioObject[];     // clips audio de la piste, ordonnés dans le temps
+}
+
 interface TimelineController {
   // Édition (toutes via CommandBus → undo/redo)
   trim(id: string, edge: "start" | "end", deltaMs: number): void;

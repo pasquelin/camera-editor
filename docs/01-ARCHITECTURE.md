@@ -72,6 +72,17 @@ Les capacités « externes » (réseau, stockage, licence, sécurité) sont **in
 au Core via interfaces — jamais importées :
 
 ```ts
+// Interfaces d'injection — implémentées par @media-studio/sdk (expo-file-system + fetch par défaut)
+interface StorageAdapter {
+  read(key: string): Promise<string | null>;
+  write(key: string, value: string): Promise<void>;
+  remove(key: string): Promise<void>;
+}
+
+interface NetworkAdapter {
+  fetch(url: string, options?: RequestInit): Promise<Response>;
+}
+
 interface CoreDependencies {
   storage: StorageAdapter;        // AsyncStorage / FileSystem injecté
   license?: LicenseValidator;     // injecté par @media-studio/licensing

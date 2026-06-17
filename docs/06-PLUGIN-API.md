@@ -39,6 +39,19 @@ peut tout ce que fait un module interne.
 ## Interfaces (TS)
 
 ```ts
+interface EditorTool {
+  id: string;                          // ToolId
+  label: string;
+  icon?: string;
+  onActivate(editor: Editor): void;
+}
+
+interface EditorPanel {
+  id: string;                          // PanelId
+  label: string;
+  render(editor: Editor): ReactNode;   // panneau d'UI (respecte le theming)
+}
+
 interface MediaStudioPlugin {
   id: string;
   version: string;
