@@ -5,6 +5,7 @@
  * (@media-studio/export-engine). Voir docs/27-BACKGROUND-JOBS.md.
  */
 export { createJobQueue } from "./job-queue";
+export { DEFAULT_EXPORT_CONFIG } from "./types";
 export type {
   ExportConfig,
   JobStatus,

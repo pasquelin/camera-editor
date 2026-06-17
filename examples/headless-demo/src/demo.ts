@@ -16,7 +16,7 @@ import {
   createTransitionCatalog,
   buildAudioMixPlan,
   gainAt,
-  type ExportConfig,
+  DEFAULT_EXPORT_CONFIG,
   type NativeEncoder,
 } from "@media-studio/sdk";
 
@@ -149,15 +149,7 @@ async function main(): Promise<void> {
   log("gain @4000ms (plein)", gainAt(mix[0]!, 4000));
 
   // 6) Export en arrière-plan (non-bloquant)
-  const config: ExportConfig = {
-    format: "mp4",
-    resolution: "1080p",
-    fps: 30,
-    videoBitrate: 8000,
-    audioBitrate: 128,
-    codec: "h264",
-    quality: 1,
-  };
+  const config = DEFAULT_EXPORT_CONFIG;
   const done = new Promise<string>((resolve) => {
     studio.jobs?.on("job:progress", (j) =>
       console.log(`  … export ${Math.round(j.progress * 100)}%`),
