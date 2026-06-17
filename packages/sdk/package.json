@@ -40,7 +40,8 @@
     "@media-studio/audio-engine": "workspace:*",
     "@media-studio/video-editor": "workspace:*",
     "@media-studio/photo-editor": "workspace:*",
-    "@media-studio/camera": "workspace:*"
+    "@media-studio/camera": "workspace:*",
+    "@media-studio/music-library": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.3.5",
