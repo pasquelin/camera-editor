@@ -7,7 +7,7 @@ import type { CommandFactory } from "../command-bus/CommandBus";
 import type { Project, VideoObject } from "../types/project";
 import { deepClone } from "../utils/clone";
 import { genId } from "../utils/id";
-import { ALLOWED_VIDEO_SPEEDS } from "./definitions";
+import { ALLOWED_VIDEO_SPEEDS, isOneOf } from "./definitions";
 import { requireObject, snapshotCommand, trackArray } from "./helpers";
 
 /** Précision minimale d'un split par rapport aux bords du clip (ms). */
@@ -18,66 +18,51 @@ function timelineDuration(v: VideoObject): number {
   return (v.trim.end - v.trim.start) / v.speed;
 }
 
-/** Pré-validation : l'objet existe et est bien un clip vidéo. */
+/** Réf vivante d'un clip vidéo (existence + type vérifiés). */
 function requireVideo(project: Readonly<Project>, objectId: string, command: string): VideoObject {
-  const obj = requireObject(project, "video", objectId, command);
-  if (obj.type !== "video") {
-    throw new Error(`${command}: "${objectId}" n'est pas un clip vidéo`);
-  }
-  return obj as VideoObject;
+  return requireObject(project, "video", objectId, command, "video") as VideoObject;
 }
 
-/** Référence vivante d'un clip vidéo dans le projet en cours de mutation. */
-function videoRef(project: Project, objectId: string): VideoObject {
-  const v = trackArray(project, "video").find((o) => o.id === objectId);
-  if (!v || v.type !== "video") throw new Error(`video: clip introuvable "${objectId}"`);
-  return v as VideoObject;
-}
-
-export const trimCommand: CommandFactory = (payload) => {
-  const p = payload as { objectId: string; trim: { start: number; end: number } };
-  return snapshotCommand("video.trim", (ctx) => {
-    requireVideo(ctx.project.get(), p.objectId, "video.trim");
+export const trimCommand: CommandFactory = (payload) =>
+  snapshotCommand("video.trim", (ctx) => {
+    const p = payload as { objectId: string; trim: { start: number; end: number } };
+    const v = requireVideo(ctx.project.get(), p.objectId, "video.trim");
     if (!p.trim || p.trim.start < 0 || p.trim.end <= p.trim.start) {
       throw new Error("video.trim: fenêtre invalide (attendu 0 <= start < end)");
     }
-    ctx.project.mutate((project) => {
-      const v = videoRef(project, p.objectId);
+    return () => {
       v.trim = { start: p.trim.start, end: p.trim.end };
       v.endTime = v.startTime + timelineDuration(v);
-    });
+    };
   });
-};
 
-export const speedCommand: CommandFactory = (payload) => {
-  const p = payload as { objectId: string; speed: number };
-  return snapshotCommand("video.speed", (ctx) => {
-    requireVideo(ctx.project.get(), p.objectId, "video.speed");
-    if (!(ALLOWED_VIDEO_SPEEDS as readonly number[]).includes(p.speed)) {
+export const speedCommand: CommandFactory = (payload) =>
+  snapshotCommand("video.speed", (ctx) => {
+    const p = payload as { objectId: string; speed: number };
+    const v = requireVideo(ctx.project.get(), p.objectId, "video.speed");
+    if (!isOneOf(ALLOWED_VIDEO_SPEEDS, p.speed)) {
       throw new Error(`video.speed: vitesse non autorisée "${p.speed}"`);
     }
-    ctx.project.mutate((project) => {
-      const v = videoRef(project, p.objectId);
+    return () => {
       v.speed = p.speed;
       v.endTime = v.startTime + timelineDuration(v);
-    });
+    };
   });
-};
 
-export const splitCommand: CommandFactory = (payload) => {
-  const p = payload as { objectId: string; atTimeMs: number; newId?: string };
-  return snapshotCommand("video.split", (ctx) => {
-    const src = requireVideo(ctx.project.get(), p.objectId, "video.split");
+export const splitCommand: CommandFactory = (payload) =>
+  snapshotCommand("video.split", (ctx) => {
+    const p = payload as { objectId: string; atTimeMs: number; newId?: string };
+    const project = ctx.project.get();
+    const a = requireVideo(project, p.objectId, "video.split");
     if (
-      p.atTimeMs - src.startTime < MIN_SPLIT_MARGIN_MS ||
-      src.endTime - p.atTimeMs < MIN_SPLIT_MARGIN_MS
+      p.atTimeMs - a.startTime < MIN_SPLIT_MARGIN_MS ||
+      a.endTime - p.atTimeMs < MIN_SPLIT_MARGIN_MS
     ) {
       throw new Error("video.split: précision minimale de 100 ms par rapport aux bords");
     }
     const newId = p.newId ?? genId();
-    ctx.project.mutate((project) => {
-      const arr = trackArray(project, "video");
-      const a = videoRef(project, p.objectId);
+    const arr = trackArray(project, "video");
+    return () => {
       const splitSource = a.trim.start + (p.atTimeMs - a.startTime) * a.speed;
       const b: VideoObject = {
         ...deepClone(a),
@@ -89,60 +74,52 @@ export const splitCommand: CommandFactory = (payload) => {
       a.endTime = p.atTimeMs;
       a.trim = { start: a.trim.start, end: splitSource };
       arr.splice(arr.indexOf(a) + 1, 0, b);
-    });
+    };
   });
-};
 
-export const mergeCommand: CommandFactory = (payload) => {
-  const p = payload as { objectIdA: string; objectIdB: string };
-  return snapshotCommand("video.merge", (ctx) => {
-    const a = requireVideo(ctx.project.get(), p.objectIdA, "video.merge");
-    const b = requireVideo(ctx.project.get(), p.objectIdB, "video.merge");
+export const mergeCommand: CommandFactory = (payload) =>
+  snapshotCommand("video.merge", (ctx) => {
+    const p = payload as { objectIdA: string; objectIdB: string };
+    const project = ctx.project.get();
+    const a = requireVideo(project, p.objectIdA, "video.merge");
+    const b = requireVideo(project, p.objectIdB, "video.merge");
     if (a.source !== b.source) throw new Error("video.merge: sources différentes");
     if (a.endTime !== b.startTime) throw new Error("video.merge: clips non contigus (timeline)");
     if (a.trim.end !== b.trim.start) throw new Error("video.merge: fenêtres source non contiguës");
-    ctx.project.mutate((project) => {
-      const arr = trackArray(project, "video");
-      const ra = videoRef(project, p.objectIdA);
-      const rb = videoRef(project, p.objectIdB);
-      ra.trim = { start: ra.trim.start, end: rb.trim.end };
-      ra.endTime = rb.endTime;
-      arr.splice(arr.indexOf(rb), 1);
-    });
+    const arr = trackArray(project, "video");
+    return () => {
+      a.trim = { start: a.trim.start, end: b.trim.end };
+      a.endTime = b.endTime;
+      arr.splice(arr.indexOf(b), 1);
+    };
   });
-};
 
-export const reverseCommand: CommandFactory = (payload) => {
-  const p = payload as { objectId: string; reversed?: boolean };
-  return snapshotCommand("video.reverse", (ctx) => {
-    requireVideo(ctx.project.get(), p.objectId, "video.reverse");
-    ctx.project.mutate((project) => {
-      const v = videoRef(project, p.objectId);
+export const reverseCommand: CommandFactory = (payload) =>
+  snapshotCommand("video.reverse", (ctx) => {
+    const p = payload as { objectId: string; reversed?: boolean };
+    const v = requireVideo(ctx.project.get(), p.objectId, "video.reverse");
+    return () => {
       v.reversed = p.reversed ?? !v.reversed;
-    });
+    };
   });
-};
 
-export const muteCommand: CommandFactory = (payload) => {
-  const p = payload as { objectId: string; muted?: boolean };
-  return snapshotCommand("video.mute", (ctx) => {
-    requireVideo(ctx.project.get(), p.objectId, "video.mute");
-    ctx.project.mutate((project) => {
-      const v = videoRef(project, p.objectId);
+export const muteCommand: CommandFactory = (payload) =>
+  snapshotCommand("video.mute", (ctx) => {
+    const p = payload as { objectId: string; muted?: boolean };
+    const v = requireVideo(ctx.project.get(), p.objectId, "video.mute");
+    return () => {
       v.muted = p.muted ?? !v.muted;
-    });
+    };
   });
-};
 
-export const coverCommand: CommandFactory = (payload) => {
-  const p = payload as { objectId: string; cover: number };
-  return snapshotCommand("video.cover", (ctx) => {
+export const coverCommand: CommandFactory = (payload) =>
+  snapshotCommand("video.cover", (ctx) => {
+    const p = payload as { objectId: string; cover: number };
     const v = requireVideo(ctx.project.get(), p.objectId, "video.cover");
     if (p.cover < v.trim.start || p.cover > v.trim.end) {
       throw new Error("video.cover: frame hors de [trim.start, trim.end]");
     }
-    ctx.project.mutate((project) => {
-      videoRef(project, p.objectId).cover = p.cover;
-    });
+    return () => {
+      v.cover = p.cover;
+    };
   });
-};

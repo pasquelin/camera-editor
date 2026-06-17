@@ -27,6 +27,9 @@ const isNum = (v: unknown): v is number => typeof v === "number" && Number.isFin
 const isStr = (v: unknown): v is string => typeof v === "string";
 const isBool = (v: unknown): v is boolean => typeof v === "boolean";
 const inRange = (v: unknown, min: number, max: number): boolean => isNum(v) && v >= min && v <= max;
+/** Appartenance à un ensemble de valeurs autorisées (avec narrowing). */
+export const isOneOf = <T>(values: readonly T[], v: unknown): v is T =>
+  (values as readonly unknown[]).includes(v);
 const isRect = (v: unknown): boolean =>
   isObject(v) && isNum(v.x) && isNum(v.y) && isNum(v.width) && isNum(v.height);
 const isRange = (v: unknown): boolean => isObject(v) && isNum(v.start) && isNum(v.end);
@@ -101,7 +104,7 @@ export const videoObjectDefinition: ObjectDefinition<VideoObject> = {
     isStr(obj.source) &&
     isRange(obj.trim) &&
     isRect(obj.crop) &&
-    (ALLOWED_VIDEO_SPEEDS as readonly number[]).includes(obj.speed as number) &&
+    isOneOf(ALLOWED_VIDEO_SPEEDS, obj.speed) &&
     inRange(obj.volume, 0, 1) &&
     isBool(obj.muted) &&
     isBool(obj.reversed) &&
@@ -124,7 +127,7 @@ export const imageObjectDefinition: ObjectDefinition<ImageObject> = {
 
 // ---- text ------------------------------------------------------------------
 
-const TEXT_ANIMATIONS = [
+export const TEXT_ANIMATIONS = [
   "fadeIn",
   "fadeOut",
   "slideUp",
@@ -158,7 +161,7 @@ function isTextStyle(v: unknown): boolean {
     isStr(v.color) &&
     isNum(v.letterSpacingPx) &&
     isNum(v.lineHeight) &&
-    (TEXT_ALIGNS as readonly string[]).includes(v.align as string) &&
+    isOneOf(TEXT_ALIGNS, v.align) &&
     inRange(v.opacity, 0, 1)
   );
 }
@@ -177,8 +180,7 @@ export const textObjectDefinition: ObjectDefinition<TextObject> = {
     validateBase(obj, "text") &&
     isStr(obj.content) &&
     isTextStyle(obj.style) &&
-    (obj.animation === null ||
-      (TEXT_ANIMATIONS as readonly string[]).includes(obj.animation as string)),
+    (obj.animation === null || isOneOf(TEXT_ANIMATIONS, obj.animation)),
 };
 
 // ---- audio -----------------------------------------------------------------
@@ -207,7 +209,7 @@ export const audioObjectDefinition: ObjectDefinition<AudioObject> = {
   validate: (obj): boolean =>
     validateBase(obj, "audio") &&
     isStr(obj.source) &&
-    (AUDIO_ROLES as readonly string[]).includes(obj.role as string) &&
+    isOneOf(AUDIO_ROLES, obj.role) &&
     inRange(obj.volume, 0, 2) &&
     isNum(obj.fadeIn) &&
     isNum(obj.fadeOut) &&
@@ -219,7 +221,7 @@ export const audioObjectDefinition: ObjectDefinition<AudioObject> = {
 // ---- sticker ---------------------------------------------------------------
 
 const STICKER_FORMATS = ["png", "svg", "gif", "lottie"] as const;
-const STICKER_ANIMATIONS = ["fadeIn", "fadeOut", "zoom", "bounce", "pulse", "spin"] as const;
+export const STICKER_ANIMATIONS = ["fadeIn", "fadeOut", "zoom", "bounce", "pulse", "spin"] as const;
 
 export const stickerObjectDefinition: ObjectDefinition<StickerObject> = {
   type: "sticker",
@@ -234,9 +236,8 @@ export const stickerObjectDefinition: ObjectDefinition<StickerObject> = {
   validate: (obj): boolean =>
     validateBase(obj, "sticker") &&
     isStr(obj.source) &&
-    (STICKER_FORMATS as readonly string[]).includes(obj.format as string) &&
-    (obj.animation === null ||
-      (STICKER_ANIMATIONS as readonly string[]).includes(obj.animation as string)),
+    isOneOf(STICKER_FORMATS, obj.format) &&
+    (obj.animation === null || isOneOf(STICKER_ANIMATIONS, obj.animation)),
 };
 
 // ---- filter ----------------------------------------------------------------
@@ -270,6 +271,3 @@ export const builtinObjectDefinitions: ObjectDefinition[] = [
   stickerObjectDefinition as ObjectDefinition,
   filterObjectDefinition as ObjectDefinition,
 ];
-
-export const TEXT_ANIMATION_VALUES = TEXT_ANIMATIONS;
-export const STICKER_ANIMATION_VALUES = STICKER_ANIMATIONS;
