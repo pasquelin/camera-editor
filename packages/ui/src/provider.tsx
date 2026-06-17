@@ -4,15 +4,7 @@
  * l'éditeur en overlay. API impérative via `useMediaStudio()`.
  * Voir docs/26-STUDIO-FLOW.md, docs/27-BACKGROUND-JOBS.md, ADR-0017.
  */
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   createMediaStudio,
   type ExportConfig,
@@ -56,21 +48,10 @@ export function MediaStudioProvider({
     const queue = studio.jobs;
     if (!queue) return;
     const refresh = (): void => setJobs(queue.list().map((j) => ({ ...j })));
-    const unsubscribers = [
-      queue.on("job:started", refresh),
-      queue.on("job:progress", refresh),
-      queue.on("job:completed", refresh),
-      queue.on("job:failed", refresh),
-    ];
+    const events = ["job:started", "job:progress", "job:completed", "job:failed"] as const;
+    const unsubscribers = events.map((event) => queue.on(event, refresh));
     return () => unsubscribers.forEach((u) => u());
   }, [studio]);
-
-  const exportProject = useCallback(
-    (config: ExportConfig) => {
-      studio.exportProject(config);
-    },
-    [studio],
-  );
 
   const value = useMemo<MediaStudioContextValue>(
     () => ({
@@ -79,9 +60,9 @@ export function MediaStudioProvider({
       isOpen,
       open: () => setIsOpen(true),
       close: () => setIsOpen(false),
-      exportProject,
+      exportProject: (config: ExportConfig) => studio.exportProject(config),
     }),
-    [studio, jobs, isOpen, exportProject],
+    [studio, jobs, isOpen],
   );
 
   return <MediaStudioContext.Provider value={value}>{children}</MediaStudioContext.Provider>;

@@ -15,6 +15,17 @@ export interface ExportConfig {
   quality: number; // 0–1 (JPEG)
 }
 
+/** Config d'export par défaut (MP4 1080p H.264) — source unique réutilisable. */
+export const DEFAULT_EXPORT_CONFIG: ExportConfig = {
+  format: "mp4",
+  resolution: "1080p",
+  fps: 30,
+  videoBitrate: 8000,
+  audioBitrate: 128,
+  codec: "h264",
+  quality: 1,
+};
+
 export type JobStatus = "queued" | "running" | "completed" | "failed" | "cancelled";
 
 export interface ExportJob {
