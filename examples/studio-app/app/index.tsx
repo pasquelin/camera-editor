@@ -4,6 +4,7 @@
  * undo/redo, export) est fournie par le SDK headless via `useMediaStudio()`.
  */
 import { ScrollView, Text, View, Pressable } from "react-native";
+import { Link } from "expo-router";
 import { useMediaStudio } from "@media-studio/ui";
 
 export default function Home() {
@@ -33,6 +34,20 @@ export default function Home() {
       >
         <Text style={{ color: "#fff", fontSize: 17, fontWeight: "600" }}>Ouvrir l'éditeur</Text>
       </Pressable>
+
+      <Link href="/camera" asChild>
+        <Pressable
+          style={{
+            paddingVertical: 16,
+            borderRadius: 14,
+            borderCurve: "continuous",
+            backgroundColor: "#1c1c1e",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 17, fontWeight: "600" }}>Caméra</Text>
+        </Pressable>
+      </Link>
 
       <View style={{ gap: 4 }}>
         <Text selectable style={{ color: "#666" }}>

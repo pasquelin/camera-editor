@@ -14,6 +14,7 @@ import {
   createExportRenderer,
   createVideoEditor,
   createTransitionCatalog,
+  createCameraSession,
   buildAudioMixPlan,
   gainAt,
   DEFAULT_EXPORT_CONFIG,
@@ -147,6 +148,22 @@ async function main(): Promise<void> {
   log("plan de mix (pistes)", mix.length);
   log("gain @500ms (fade-in)", Number(gainAt(mix[0]!, 500).toFixed(2)));
   log("gain @4000ms (plein)", gainAt(mix[0]!, 4000));
+
+  // 5e) Session caméra headless (capture segmentée → projet via CommandBus)
+  const camera = createCameraSession(core, { defaultRatio: "9:16" });
+  camera.addClip({ uri: "cam://seg1.mov", width: 1080, height: 1920, durationMs: 3000 });
+  camera.addClip({ uri: "cam://seg2.mov", width: 1080, height: 1920, durationMs: 2000 });
+  camera.addPhoto({ uri: "cam://shot.jpg", width: 1080, height: 1920 });
+  log("caméra — captures", camera.captured.length);
+  camera.setExposure(5); // hors plage → borné à 2
+  log("caméra — EV borné", camera.exposure);
+  log(
+    "clips caméra positionnés",
+    core.project
+      .get()
+      .tracks.video.filter((o) => o.source.startsWith("cam://"))
+      .map((o) => `${o.id}[${o.startTime}-${o.endTime}]`),
+  );
 
   // 6) Export en arrière-plan (non-bloquant)
   const config = DEFAULT_EXPORT_CONFIG;
