@@ -1,11 +1,11 @@
 /**
  * Session de capture headless : gère l'état optique (facing/flash/ratio/zoom/
  * exposition, bornés) et intègre chaque capture au projet via le CommandBus
- * (image.create / video.create). L'enregistrement segmenté positionne les clips en
- * séquence sur la piste visuelle. La caméra ne mute jamais le projet directement.
- * Voir docs/16-CAMERA.md, ADR-0007.
+ * (image.create / video.create). L'enregistrement segmenté positionne les clips à
+ * la suite des clips vidéo déjà présents (vérité du projet). La caméra ne mute
+ * jamais le projet directement. Voir docs/16-CAMERA.md, ADR-0007.
  */
-import type { Core } from "@media-studio/core";
+import type { Core, Project } from "@media-studio/core";
 import type {
   CameraConfig,
   CameraFacing,
@@ -33,6 +33,13 @@ export function clampPointOfInterest(point: PointOfInterest): PointOfInterest {
   return { x: clamp(point.x, 0, 1), y: clamp(point.y, 0, 1) };
 }
 
+/** Fin de la piste vidéo (max endTime), point de départ du prochain segment. */
+function nextVideoStart(project: Readonly<Project>): number {
+  let end = 0;
+  for (const clip of project.tracks.video) if (clip.endTime > end) end = clip.endTime;
+  return end;
+}
+
 export interface CameraSession {
   readonly facing: CameraFacing;
   readonly flash: FlashMode;
@@ -49,12 +56,9 @@ export interface CameraSession {
 
   /** Intègre une photo capturée au projet (→ image.create). Retourne son id. */
   addPhoto(capture: PhotoCapture, id?: string): string;
-  /** Intègre un segment vidéo au projet (→ video.create), positionné en séquence. */
+  /** Intègre un segment vidéo au projet (→ video.create), à la suite de la piste. */
   addClip(capture: VideoCapture, id?: string): string;
 }
-
-let seq = 0;
-const nextId = (prefix: string): string => `${prefix}-${(seq += 1)}`;
 
 /** Crée une session de capture liée à un Core. */
 export function createCameraSession(core: Core, config: CameraConfig = {}): CameraSession {
@@ -62,13 +66,25 @@ export function createCameraSession(core: Core, config: CameraConfig = {}): Came
   let flash: FlashMode = config.defaultFlash ?? "auto";
   let ratio: CameraRatio = config.defaultRatio ?? "9:16";
   let exposure = 0;
+  let seq = 0;
   const captured: string[] = [];
-  let nextStartMs = 0; // position du prochain clip sur la timeline (séquence)
 
-  const ensureCapacity = (): void => {
+  const nextId = (prefix: string): string => `${prefix}-${(seq += 1)}`;
+
+  /** Corps commun : capacité, id, dispatch CommandBus, suivi. */
+  const addCapture = (
+    prefix: string,
+    command: string,
+    object: Record<string, unknown>,
+    id?: string,
+  ): string => {
     if (config.maxSegments !== undefined && captured.length >= config.maxSegments) {
       throw new Error(`camera: nombre maximal de segments atteint (${config.maxSegments})`);
     }
+    const captureId = id ?? nextId(prefix);
+    core.execute(command, { id: captureId, object });
+    captured.push(captureId);
+    return captureId;
   };
 
   return {
@@ -102,40 +118,29 @@ export function createCameraSession(core: Core, config: CameraConfig = {}): Came
     },
     focus: (point) => clampPointOfInterest(point),
 
-    addPhoto: (capture, id) => {
-      ensureCapacity();
-      const photoId = id ?? nextId("photo");
-      core.execute("image.create", {
-        id: photoId,
-        object: {
-          source: capture.uri,
-          width: capture.width,
-          height: capture.height,
-        },
-      });
-      captured.push(photoId);
-      return photoId;
-    },
+    addPhoto: (capture, id) =>
+      addCapture(
+        "photo",
+        "image.create",
+        { source: capture.uri, width: capture.width, height: capture.height },
+        id,
+      ),
 
     addClip: (capture, id) => {
-      ensureCapacity();
-      const clipId = id ?? nextId("clip");
-      const startTime = nextStartMs;
-      const endTime = startTime + capture.durationMs;
-      core.execute("video.create", {
-        id: clipId,
-        object: {
+      const startTime = nextVideoStart(core.project.get());
+      return addCapture(
+        "clip",
+        "video.create",
+        {
           source: capture.uri,
           width: capture.width,
           height: capture.height,
           startTime,
-          endTime,
+          endTime: startTime + capture.durationMs,
           trim: { start: 0, end: capture.durationMs },
         },
-      });
-      nextStartMs = endTime;
-      captured.push(clipId);
-      return clipId;
+        id,
+      );
     },
   };
 }

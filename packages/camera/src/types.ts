@@ -4,8 +4,11 @@
  * session headless, les bornes et l'intégration au projet. Voir docs/16-CAMERA.md.
  */
 
+import type { AspectRatio } from "@media-studio/core";
+
 export type FlashMode = "auto" | "on" | "off" | "torch";
-export type CameraRatio = "9:16" | "16:9" | "1:1" | "4:3";
+/** Ratio de caméra = AspectRatio du projet (source unique, docs/02). */
+export type CameraRatio = AspectRatio;
 export type CameraFacing = "front" | "back";
 
 export interface PointOfInterest {
