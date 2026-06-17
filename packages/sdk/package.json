@@ -1,0 +1,29 @@
+{
+  "name": "@media-studio/sdk",
+  "version": "0.0.0",
+  "description": "Point d'entrée unique du SDK Media Studio — agrège core et tous les moteurs headless, et expose la façade createMediaStudio. Voir docs/11-MONOREPO.md.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist"],
+  "sideEffects": false,
+  "scripts": { "build": "tsup", "dev": "tsup --watch", "typecheck": "tsc --noEmit", "test": "vitest run", "lint": "tsc --noEmit" },
+  "dependencies": {
+    "@media-studio/core": "workspace:*",
+    "@media-studio/licensing": "workspace:*",
+    "@media-studio/filter-engine": "workspace:*",
+    "@media-studio/text-engine": "workspace:*",
+    "@media-studio/sticker-engine": "workspace:*",
+    "@media-studio/runtime": "workspace:*",
+    "@media-studio/timeline": "workspace:*",
+    "@media-studio/background-jobs": "workspace:*",
+    "@media-studio/export-engine": "workspace:*",
+    "@media-studio/security": "workspace:*",
+    "@media-studio/asset-manager": "workspace:*"
+  },
+  "devDependencies": { "tsup": "^8.3.5", "typescript": "^5.6.3", "vitest": "^2.1.8" },
+  "publishConfig": { "access": "public" }
+}
