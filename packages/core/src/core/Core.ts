@@ -12,6 +12,7 @@ import { SchemaRegistry } from "../schema-registry/SchemaRegistry";
 import type { EditorEventMap } from "../types/events";
 import type { StorageAdapter } from "../types/storage";
 import type { ObjectDefinition } from "../object-registry/ObjectRegistry";
+import type { LicenseValidator } from "../types/license";
 import { registerBuiltins } from "../builtins/registerBuiltins";
 
 /** Dépendances injectées au Core. Aucune n'est requise (open-core sans I/O). */
@@ -20,7 +21,19 @@ export interface CoreDependencies {
   security?: PluginVerifier;
   /** Enregistre les types et commandes built-in au démarrage. Défaut : `true`. */
   builtins?: boolean;
+  /** Validateur de licence injecté. Sans lui, périmètre open-source (aucun premium). */
+  license?: LicenseValidator;
 }
+
+/**
+ * Validateur par défaut : open-source, refuse toute capacité premium.
+ * Miroir intentionnel de `createLicense("open-source")` du package licensing —
+ * dupliqué ici car le Core ne doit dépendre d'aucun package (invariant open-core).
+ */
+const OPEN_SOURCE_LICENSE: LicenseValidator = {
+  plan: "open-source",
+  has: () => false,
+};
 
 /**
  * Agrège les modules du noyau et expose une façade (`execute`, `undo`, `on`…).
@@ -34,6 +47,8 @@ export class Core {
   readonly project: ProjectManager;
   readonly commands: CommandBus;
   readonly plugins: PluginManager;
+  /** Validateur de licence courant (injecté ou défaut open-source). */
+  readonly license: LicenseValidator;
 
   constructor(deps: CoreDependencies = {}) {
     this.events = new EventBus();
@@ -50,6 +65,7 @@ export class Core {
     };
     this.commands = new CommandBus(context);
     this.plugins = new PluginManager(this, deps.security);
+    this.license = deps.license ?? OPEN_SOURCE_LICENSE;
 
     if (deps.builtins !== false) registerBuiltins(this);
   }
