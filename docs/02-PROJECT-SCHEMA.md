@@ -29,7 +29,9 @@ interface Project {
   duration: number;       // ms, durée totale calculée
   aspectRatio: "9:16" | "16:9" | "1:1" | "4:3";
   tracks: {
-    video: VideoObject[];
+    // Piste visuelle : accueille clips vidéo ET images fixes
+    // (cf. 05-TIMELINE — un VideoTrack contient VideoObject + ImageObject).
+    video: (VideoObject | ImageObject)[];
     audio: AudioObject[];
     text: TextObject[];
     sticker: StickerObject[];

@@ -11,11 +11,15 @@ import { ProjectManager } from "../project-manager/ProjectManager";
 import { SchemaRegistry } from "../schema-registry/SchemaRegistry";
 import type { EditorEventMap } from "../types/events";
 import type { StorageAdapter } from "../types/storage";
+import type { ObjectDefinition } from "../object-registry/ObjectRegistry";
+import { registerBuiltins } from "../builtins/registerBuiltins";
 
 /** Dépendances injectées au Core. Aucune n'est requise (open-core sans I/O). */
 export interface CoreDependencies {
   storage?: StorageAdapter;
   security?: PluginVerifier;
+  /** Enregistre les types et commandes built-in au démarrage. Défaut : `true`. */
+  builtins?: boolean;
 }
 
 /**
@@ -46,6 +50,8 @@ export class Core {
     };
     this.commands = new CommandBus(context);
     this.plugins = new PluginManager(this, deps.security);
+
+    if (deps.builtins !== false) registerBuiltins(this);
   }
 
   execute(name: string, payload?: unknown): void {
@@ -69,6 +75,11 @@ export class Core {
 
   registerCommand(name: string, factory: CommandFactory): void {
     this.commands.register(name, factory);
+  }
+
+  /** Enregistre un type d'objet (même API que les plugins). → docs/06-PLUGIN-API.md */
+  registerObjectType(definition: ObjectDefinition): void {
+    this.objects.register(definition.type, definition);
   }
 
   registerPlugin(plugin: MediaStudioPlugin): Promise<void> {
