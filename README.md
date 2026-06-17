@@ -29,13 +29,17 @@ packages/
   asset-manager/      registry de ResourcePack + gating licence
   video-editor/       contrôleur headless d'édition vidéo
   photo-editor/       contrôleur headless d'édition photo
-  ui/                 couche React (Provider, hooks, <MediaStudio>, <ExportProgress>)
+  music-library/      bibliothèque musicale (catalogue + MusicSource remplaçable)
+  renderer/preview/   PreviewRenderer Skia (composition des calques photo)
+  ui/                 couche React (Provider, hooks, <MediaStudio>, theming)
+  cli/                CLI media-studio (init/new-project/create-plugin/doctor)
   sdk/                point d'entrée unique + façade createMediaStudio
 modules/
   media-studio-export/  module natif Expo d'export (FFmpeg/AVFoundation/MediaCodec)
 examples/
   headless-demo/      démo Node exécutable de toute la chaîne headless
   studio-app/         app Expo (Expo Go) consommant le SDK
+website/              site de documentation Docusaurus (public)
 ```
 
 Tout le **socle logique est headless** (zéro dépendance native dans la logique) :
