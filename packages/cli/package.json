@@ -1,0 +1,13 @@
+{
+  "name": "@media-studio/cli",
+  "version": "0.0.0",
+  "description": "CLI media-studio — scaffolding de projets/plugins et diagnostics (docs/25).",
+  "license": "MIT",
+  "type": "module",
+  "bin": { "media-studio": "./dist/cli.js" },
+  "files": ["dist"],
+  "scripts": { "build": "tsup", "dev": "tsup --watch", "typecheck": "tsc --noEmit", "test": "vitest run --passWithNoTests", "lint": "tsc --noEmit" },
+  "dependencies": { "@media-studio/core": "workspace:*" },
+  "devDependencies": { "@types/node": "^22.10.2", "tsup": "^8.3.5", "typescript": "^5.6.3", "vitest": "^2.1.8" },
+  "publishConfig": { "access": "public" }
+}

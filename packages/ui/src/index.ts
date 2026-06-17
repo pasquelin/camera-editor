@@ -11,3 +11,12 @@ export {
 } from "./provider";
 export { ExportProgress, type ExportProgressProps } from "./export-progress";
 export { MediaStudio, type MediaStudioProps } from "./media-studio";
+export {
+  ThemeProvider,
+  useTheme,
+  defaultTheme,
+  darkTheme,
+  lightTheme,
+  type MediaStudioTheme,
+  type ThemeProviderProps,
+} from "./theme";
