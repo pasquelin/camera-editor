@@ -1,0 +1,8 @@
+packages:
+  - "packages/*"
+  - "packages/renderer/*"
+  - "examples/*"
+
+# Dépendances autorisées à exécuter leurs scripts de build natif (binaire esbuild).
+allowBuilds:
+  esbuild: true
