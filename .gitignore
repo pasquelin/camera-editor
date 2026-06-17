@@ -1,0 +1,62 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+# Build artefacts générés par prebuild (managed workflow)
+/ios
+/android
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# Builds / output
+build/
+*.tsbuildinfo
+coverage/
+
+# Turborepo
+.turbo/
+
+# EAS
+.eas/
+
+# Logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+
+# Environnement & secrets
+.env
+.env*.local
+*.pem
+
+# macOS / éditeurs
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Caches divers
+.cache/
+.tmp/

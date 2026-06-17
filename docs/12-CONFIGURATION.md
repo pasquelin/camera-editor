@@ -1,0 +1,238 @@
+# 12 — Configuration (contrat de paramétrage)
+
+## Purpose
+
+Définir **le contrat de paramétrage complet** du SDK : comment un intégrateur
+adapte Media Studio à son projet, depuis « j'active deux features et je change la
+couleur d'accent » jusqu'à « je remplace toute l'UI et je pilote le moteur en
+headless ». C'est le document de référence de l'exigence **« tout paramétrable »**.
+
+## Concepts — le modèle d'override à 4 niveaux
+
+Le paramétrage est gradué : chaque niveau est plus puissant et plus engageant que
+le précédent. On ne paie la complexité que du niveau qu'on utilise.
+
+```
+Niveau 0 — Capability flags     activer / désactiver des sous-systèmes
+Niveau 1 — Design tokens        thémer l'UI par défaut (couleurs, fonts, radius…)
+Niveau 2 — Slots / render-props remplacer un composant précis de l'UI
+Niveau 3 — Headless             zéro UI fournie : on pilote les controllers/hooks
+```
+
+> Principe directeur : **headless-first**. La logique vit dans des controllers sans
+> UI ; l'UI par défaut n'est qu'un *consommateur* de cette logique. Tout ce que
+> fait l'UI par défaut, un intégrateur peut le refaire. → [ADR-0009](./ADR/0009-headless-first-config-layers.md).
+
+## Interfaces (TS)
+
+### Configuration d'initialisation (globale, une fois)
+
+```ts
+interface MediaStudioConfig {
+  // Licence — optionnelle (open-core sans clé)
+  licenseKey?: string;
+  offlineCache?: boolean;          // cache local de validation (TTL 7j)
+
+  // Adapters injectés (sinon valeurs Expo par défaut)
+  storage?: StorageAdapter;        // défaut: expo-file-system + AsyncStorage
+  network?: NetworkAdapter;
+
+  // Thème global (design tokens)
+  theme?: Partial<Theme>;
+
+  // Capacités par défaut (surchargées par les props du composant)
+  capabilities?: Partial<Capabilities>;
+
+  // Catalogues remplaçables
+  fonts?: FontSource[];            // fonts bundlées additionnelles
+  filters?: FilterDefinition[];    // catalogue de filtres custom
+  musicLibrary?: MusicSource;      // bibliothèque audio custom
+
+  // Limites runtime (dans les bornes V1)
+  limits?: Partial<EditorLimits>;
+}
+
+await MediaStudio.initialize(config: MediaStudioConfig): Promise<void>;
+```
+
+### Niveau 0 — Capability flags
+
+Activent/désactivent des sous-arbres entiers. Un flag `false` ne **monte jamais**
+la couche correspondante (ni JS, ni natif).
+
+```ts
+interface Capabilities {
+  enableCamera: boolean;
+  enableAudio: boolean;
+  enableFilters: boolean;
+  enableText: boolean;
+  enableStickers: boolean;
+  enableTimeline: boolean;
+  enableTransitions: boolean;
+  enableExport: boolean;
+}
+
+// Sur le composant racine :
+<MediaStudio mode="video" enableCamera enableAudio enableFilters />
+```
+
+Certaines capacités sont **gated par licence** (cf. [07-LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md)) :
+demander `export 4K` ou `H.265` sans plan Pro lève un avertissement et retombe sur
+la capacité libre la plus proche, sans crash.
+
+### Niveau 1 — Design tokens
+
+```ts
+interface Theme {
+  colors: {
+    primary: string;
+    background: string;
+    surface: string;
+    accent: string;
+    text: string;
+    textMuted: string;
+    border: string;
+    danger: string;
+  };
+  fonts: { ui: string; mono?: string };
+  borderRadius: number;              // forme du brief — alimente `radius.md`
+  radius?: { sm: number; md: number; lg: number; full: number }; // échelle étendue (optionnelle)
+  spacing?: (n: number) => number;   // échelle d'espacement (ex. n => n * 4)
+  typography?: {
+    body: TextTokens;
+    title: TextTokens;
+    caption: TextTokens;
+  };
+  iconSet?: IconSet;                 // jeu d'icônes remplaçable
+}
+
+MediaStudio.setTheme(partial: Partial<Theme>): void;   // runtime, réactif
+```
+
+La forme **minimale du brief** est le sous-ensemble accepté tel quel ; les autres
+tokens (`radius`, `spacing`, `typography`, `iconSet`) sont des **extensions
+additives** pour aller plus loin :
+
+```ts
+// forme minimale (brief) — valide
+MediaStudio.setTheme({
+  colors: { primary: "#fff", background: "#000", accent: "#f00" },
+  fonts: { ui: "Inter" },
+  borderRadius: 8,
+});
+```
+
+Les tokens sont **partiels et fusionnés** avec le thème par défaut : on ne surcharge
+que ce qu'on veut. `setTheme` est réactif (l'UI se met à jour sans remount).
+
+### Niveau 2 — Slots / render-props
+
+Chaque composant d'UI expose un **slot nommé**. Remplacer un slot = fournir son
+propre composant, qui reçoit un *prop bag* typé (l'état + les actions). On garde
+toute la logique, on ne change que le rendu.
+
+```ts
+interface MediaStudioSlots {
+  Toolbar?: ComponentType<ToolbarProps>;
+  Timeline?: ComponentType<TimelineProps>;
+  FilterPicker?: ComponentType<FilterPickerProps>;
+  TextEditor?: ComponentType<TextEditorProps>;
+  StickerPicker?: ComponentType<StickerPickerProps>;
+  AudioPicker?: ComponentType<AudioPickerProps>;
+  ExportPanel?: ComponentType<ExportPanelProps>;
+  CameraControls?: ComponentType<CameraControlsProps>;
+  // ... un slot par composant listé dans le package `ui`
+}
+
+<MediaStudio
+  mode="video"
+  slots={{
+    Toolbar: MyToolbar,                 // remplace entièrement la toolbar
+    ExportPanel: ({ exportConfig, onExport, progress }) => <MyExport … />,
+  }}
+/>
+```
+
+Exemple de prop bag (contrat stable, fourni par le controller headless sous-jacent) :
+
+```ts
+interface ToolbarProps {
+  selection: EditorObject | null;
+  canUndo: boolean;
+  canRedo: boolean;
+  execute: (command: string, payload?: unknown) => void;
+  undo: () => void;
+  redo: () => void;
+  theme: Theme;
+}
+```
+
+### Niveau 3 — Headless (API sans UI)
+
+On n'instancie aucun composant `MediaStudio` : on consomme directement les
+controllers/hooks. C'est le mode pour les intégrateurs qui veulent leur propre UI
+de A à Z.
+
+```ts
+import { createEditor, useEditor, useTimeline, useRuntime } from "@media-studio/sdk/headless";
+
+const editor = await createEditor(config);   // expose Core + Runtime, zéro UI
+
+// Dans un composant React :
+const { project, selection, execute, undo, redo } = useEditor(editor);
+const { play, pause, seek, currentTime, isPlaying } = useRuntime(editor);
+const { tracks, zoom, snap } = useTimeline(editor);
+
+execute("text.create", { content: "Hello" });
+play();
+```
+
+L'UI par défaut (package `ui`) est **construite au-dessus de ces mêmes hooks** :
+c'est la garantie qu'aucune capacité n'est cachée derrière l'UI.
+
+## Configuration runtime vs init
+
+| Quand | Quoi | Comment |
+|-------|------|---------|
+| **Init** (une fois) | licence, adapters, catalogues, limites | `MediaStudio.initialize(config)` |
+| **Montage** (par éditeur) | mode, capabilities, slots, callbacks | props du composant `<MediaStudio>` |
+| **Runtime** (à chaud) | thème, sélection, commandes | `setTheme()`, hooks, `editor.execute()` |
+
+## Recette — « adapter le module à mon projet »
+
+1. **Le strict minimum** : `initialize({ })` puis `<MediaStudio mode="photo" />`.
+2. **Aux couleurs de mon app** : passer un `theme` partiel à l'init ou `setTheme`.
+3. **Désactiver ce dont je n'ai pas besoin** : flags `enableX={false}`.
+4. **Remplacer un écran** : fournir un `slots.ExportPanel`.
+5. **Mon UI complète** : passer en `@media-studio/sdk/headless`.
+6. **Ajouter une feature** : enregistrer un plugin (type d'objet + commandes + panel).
+   → [06-PLUGIN-API](./06-PLUGIN-API.md).
+
+## Limites V1
+
+- Les `limits` configurables restent **bornées par les limites V1** : on peut
+  baisser `maxVideoTracks` sous 3, jamais au-dessus.
+- Les capacités Pro/Enterprise demandées sans licence valide retombent en mode
+  gracieux (warning + fallback), jamais en crash.
+- Le thème est un système de **tokens**, pas de CSS arbitraire : on paramètre
+  l'apparence dans les axes prévus (couleurs, fonts, radius, spacing, icônes).
+
+```ts
+interface EditorLimits {
+  maxVideoTracks: number;   // ≤ 3
+  maxAudioTracks: number;   // ≤ 5
+  previewFps: number;       // ≤ 30
+  undoStackSize: number;    // ≤ 50
+}
+```
+
+## Décisions liées
+
+- [ADR-0009](./ADR/0009-headless-first-config-layers.md) — headless-first + couches de configuration.
+- [ADR-0011](./ADR/0011-licensing-injected-interface.md) — capacités gated, licence optionnelle.
+
+## Cross-refs
+
+- [00-VISION](./00-VISION.md) — l'exigence « tout paramétrable ».
+- [13-STATE-DATAFLOW](./13-STATE-DATAFLOW.md) — comment les hooks exposent l'état.
+- [06-PLUGIN-API](./06-PLUGIN-API.md) — extension par plugin (le niveau au-delà des slots).
