@@ -33,8 +33,8 @@ export class SchemaRegistry {
           `SchemaRegistry: aucune migration depuis "${current.version}" vers "${targetVersion}"`,
         );
       }
-      const migrated = next.migrate(current);
-      current = migrated.version === next.from ? { ...migrated, version: next.to } : migrated;
+      // La migration produit le contenu cible ; le registre fait foi pour la version.
+      current = { ...next.migrate(current), version: next.to };
     }
     return current;
   }

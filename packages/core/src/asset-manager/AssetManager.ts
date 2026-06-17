@@ -1,6 +1,7 @@
 import type { EventBus } from "../event-bus/EventBus";
 import type { Asset, AssetSource, AssetType } from "../types/assets";
 import { genId } from "../utils/id";
+import { nowIso } from "../utils/time";
 
 /**
  * Service central de gestion des assets. Le Core ne fait pas d'I/O : la résolution
@@ -13,13 +14,14 @@ export class AssetManager {
   constructor(private readonly events: EventBus) {}
 
   async import(source: AssetSource): Promise<Asset> {
+    const uri = resolveUri(source);
     const asset: Asset = {
       id: genId(),
-      type: inferType(source),
-      uri: resolveUri(source),
+      type: inferType(uri),
+      uri,
       source,
       size: 0,
-      createdAt: new Date().toISOString(),
+      createdAt: nowIso(),
     };
     this.assets.set(asset.id, asset);
     this.events.emit("asset:imported", asset);
@@ -35,8 +37,12 @@ export class AssetManager {
   }
 
   list(type?: AssetType): Asset[] {
-    const all = [...this.assets.values()];
-    return type ? all.filter((a) => a.type === type) : all;
+    if (type === undefined) return [...this.assets.values()];
+    const result: Asset[] = [];
+    for (const asset of this.assets.values()) {
+      if (asset.type === type) result.push(asset);
+    }
+    return result;
   }
 
   async delete(id: string): Promise<void> {
@@ -54,10 +60,31 @@ export class AssetManager {
   }
 }
 
-function inferType(source: AssetSource): AssetType {
-  // Placeholder : la résolution réelle du type sera fournie par l'adapter d'import.
-  void source;
-  return "image";
+const EXTENSION_TYPES: Record<string, AssetType> = {
+  mp4: "video",
+  mov: "video",
+  m4v: "video",
+  webm: "video",
+  mp3: "audio",
+  wav: "audio",
+  aac: "audio",
+  m4a: "audio",
+  caf: "audio",
+  ttf: "font",
+  otf: "font",
+  woff: "font",
+  woff2: "font",
+  jpg: "image",
+  jpeg: "image",
+  png: "image",
+  webp: "image",
+  heic: "image",
+};
+
+/** Type déduit de l'extension de l'URI (best-effort) ; défaut "image". */
+function inferType(uri: string): AssetType {
+  const ext = uri.split("?")[0]?.split(".").pop()?.toLowerCase() ?? "";
+  return EXTENSION_TYPES[ext] ?? "image";
 }
 
 function resolveUri(source: AssetSource): string {

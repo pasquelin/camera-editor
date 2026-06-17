@@ -1,36 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Core } from "../core/Core";
-import type { TextObject } from "../types/project";
+import { makeTextObject } from "../test-utils/fixtures";
 import type { Command, CommandFactory } from "./CommandBus";
-
-function makeTextObject(id: string, content: string): TextObject {
-  return {
-    id,
-    type: "text",
-    startTime: 0,
-    endTime: 1000,
-    x: 0,
-    y: 0,
-    width: 100,
-    height: 50,
-    rotation: 0,
-    scale: 1,
-    opacity: 1,
-    locked: false,
-    visible: true,
-    content,
-    style: {
-      fontFamily: "Inter",
-      fontSize: 24,
-      color: "#ffffff",
-      letterSpacingPx: 0,
-      lineHeight: 1.2,
-      align: "center",
-      opacity: 1,
-    },
-    animation: null,
-  };
-}
 
 const createText: CommandFactory = (payload): Command => {
   const { id, content } = payload as { id: string; content: string };
@@ -70,7 +41,7 @@ describe("CommandBus", () => {
     const core = new Core();
     core.registerCommand("text.create", createText);
     let count = 0;
-    core.commands.on("stack:changed", () => {
+    core.on("stack:changed", () => {
       count += 1;
     });
     core.execute("text.create", { id: "t1", content: "Hi" });

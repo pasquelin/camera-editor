@@ -1,4 +1,5 @@
 import type { Core } from "../core/Core";
+import { RegistryMap } from "../utils/registry";
 
 export interface MediaStudioPlugin {
   id: string;
@@ -18,7 +19,7 @@ export interface PluginVerifier {
  * avant `onRegister`. Voir docs/06-PLUGIN-API.md et docs/ADR/0013-security-layer-package.md.
  */
 export class PluginManager {
-  private readonly plugins = new Map<string, MediaStudioPlugin>();
+  private readonly plugins = new RegistryMap<MediaStudioPlugin>();
 
   constructor(
     private readonly editor: Core,
@@ -34,7 +35,7 @@ export class PluginManager {
       if (!ok) throw new Error(`PluginManager: signature invalide pour "${plugin.id}"`);
     }
     plugin.onRegister(this.editor);
-    this.plugins.set(plugin.id, plugin);
+    this.plugins.set(plugin.id, plugin, "PluginManager");
   }
 
   destroy(id: string): void {
@@ -45,6 +46,6 @@ export class PluginManager {
   }
 
   list(): MediaStudioPlugin[] {
-    return [...this.plugins.values()];
+    return this.plugins.values();
   }
 }

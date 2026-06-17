@@ -134,7 +134,7 @@ core.events.on("object:updated", (obj) => {
 });
 core.events.on("object:deleted", (id) => { /* retire de objectsById + trackIds */ });
 core.events.on("project:loaded", (p) => projectStore.getState().hydrate(p));
-core.commands.on("stack:changed", () =>
+core.on("stack:changed", () =>
   editorStore.setState({ canUndo: core.commands.canUndo(), canRedo: core.commands.canRedo() })
 );
 ```

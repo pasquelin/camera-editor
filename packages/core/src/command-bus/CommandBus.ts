@@ -2,6 +2,7 @@ import type { AssetManager } from "../asset-manager/AssetManager";
 import type { EventBus } from "../event-bus/EventBus";
 import type { ObjectRegistry } from "../object-registry/ObjectRegistry";
 import type { ProjectManager } from "../project-manager/ProjectManager";
+import { RegistryMap } from "../utils/registry";
 
 /** Contexte fourni à chaque commande lors de son exécution. */
 export interface EditorContext {
@@ -26,10 +27,9 @@ export const DEFAULT_UNDO_STACK_SIZE = 50;
  * Voir docs/01-ARCHITECTURE.md (Annexe A) et docs/ADR/0007-mutations-commandbus-undo.md.
  */
 export class CommandBus {
-  private readonly factories = new Map<string, CommandFactory>();
+  private readonly factories = new RegistryMap<CommandFactory>();
   private readonly undoStack: Command[] = [];
   private readonly redoStack: Command[] = [];
-  private readonly stackListeners = new Set<() => void>();
 
   constructor(
     private readonly context: EditorContext,
@@ -38,10 +38,7 @@ export class CommandBus {
 
   /** Enregistre une fabrique de commande sous un nom `namespace.verb`. */
   register(name: string, factory: CommandFactory): void {
-    if (this.factories.has(name)) {
-      throw new Error(`CommandBus: commande déjà enregistrée: "${name}"`);
-    }
-    this.factories.set(name, factory);
+    this.factories.set(name, factory, "CommandBus");
   }
 
   execute(name: string, payload?: unknown): void {
@@ -79,16 +76,11 @@ export class CommandBus {
     return this.redoStack.length > 0;
   }
 
-  /** S'abonne aux changements de pile (undo/redo). Voir docs/13-STATE-DATAFLOW.md. */
-  on(event: "stack:changed", listener: () => void): () => void {
-    void event;
-    this.stackListeners.add(listener);
-    return () => {
-      this.stackListeners.delete(listener);
-    };
-  }
-
+  /**
+   * Émis sur l'EventBus partagé après chaque execute/undo/redo.
+   * S'abonner via `core.on("stack:changed", …)`. Voir docs/13-STATE-DATAFLOW.md.
+   */
   private emitStackChanged(): void {
-    for (const listener of this.stackListeners) listener();
+    this.context.events.emit("stack:changed");
   }
 }
