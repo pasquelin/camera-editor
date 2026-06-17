@@ -142,6 +142,21 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.21)
 
+  packages/photo-editor:
+    devDependencies:
+      '@media-studio/core':
+        specifier: workspace:*
+        version: link:../core
+      tsup:
+        specifier: ^8.3.5
+        version: 8.5.1(postcss@8.5.15)(tsx@4.22.4)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.19.21)
+
   packages/runtime:
     devDependencies:
       tsup:
@@ -159,6 +174,9 @@ importers:
       '@media-studio/asset-manager':
         specifier: workspace:*
         version: link:../asset-manager
+      '@media-studio/audio-engine':
+        specifier: workspace:*
+        version: link:../audio-engine
       '@media-studio/background-jobs':
         specifier: workspace:*
         version: link:../background-jobs
@@ -174,6 +192,9 @@ importers:
       '@media-studio/licensing':
         specifier: workspace:*
         version: link:../licensing
+      '@media-studio/photo-editor':
+        specifier: workspace:*
+        version: link:../photo-editor
       '@media-studio/runtime':
         specifier: workspace:*
         version: link:../runtime
@@ -189,6 +210,12 @@ importers:
       '@media-studio/timeline':
         specifier: workspace:*
         version: link:../timeline
+      '@media-studio/transition-engine':
+        specifier: workspace:*
+        version: link:../transition-engine
+      '@media-studio/video-editor':
+        specifier: workspace:*
+        version: link:../video-editor
     devDependencies:
       tsup:
         specifier: ^8.3.5
@@ -261,6 +288,21 @@ importers:
         version: 2.1.9(@types/node@22.19.21)
 
   packages/transition-engine:
+    devDependencies:
+      '@media-studio/core':
+        specifier: workspace:*
+        version: link:../core
+      tsup:
+        specifier: ^8.3.5
+        version: 8.5.1(postcss@8.5.15)(tsx@4.22.4)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.19.21)
+
+  packages/video-editor:
     devDependencies:
       '@media-studio/core':
         specifier: workspace:*

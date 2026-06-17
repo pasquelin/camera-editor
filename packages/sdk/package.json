@@ -35,7 +35,11 @@
     "@media-studio/background-jobs": "workspace:*",
     "@media-studio/export-engine": "workspace:*",
     "@media-studio/security": "workspace:*",
-    "@media-studio/asset-manager": "workspace:*"
+    "@media-studio/asset-manager": "workspace:*",
+    "@media-studio/transition-engine": "workspace:*",
+    "@media-studio/audio-engine": "workspace:*",
+    "@media-studio/video-editor": "workspace:*",
+    "@media-studio/photo-editor": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.3.5",
