@@ -25,7 +25,11 @@ export interface CoreDependencies {
   license?: LicenseValidator;
 }
 
-/** Validateur par défaut : open-source, refuse toute capacité premium. */
+/**
+ * Validateur par défaut : open-source, refuse toute capacité premium.
+ * Miroir intentionnel de `createLicense("open-source")` du package licensing —
+ * dupliqué ici car le Core ne doit dépendre d'aucun package (invariant open-core).
+ */
 const OPEN_SOURCE_LICENSE: LicenseValidator = {
   plan: "open-source",
   has: () => false,
@@ -43,7 +47,8 @@ export class Core {
   readonly project: ProjectManager;
   readonly commands: CommandBus;
   readonly plugins: PluginManager;
-  private readonly _license: LicenseValidator;
+  /** Validateur de licence courant (injecté ou défaut open-source). */
+  readonly license: LicenseValidator;
 
   constructor(deps: CoreDependencies = {}) {
     this.events = new EventBus();
@@ -60,14 +65,9 @@ export class Core {
     };
     this.commands = new CommandBus(context);
     this.plugins = new PluginManager(this, deps.security);
-    this._license = deps.license ?? OPEN_SOURCE_LICENSE;
+    this.license = deps.license ?? OPEN_SOURCE_LICENSE;
 
     if (deps.builtins !== false) registerBuiltins(this);
-  }
-
-  /** Validateur de licence courant (injecté ou défaut open-source). */
-  get license(): LicenseValidator {
-    return this._license;
   }
 
   execute(name: string, payload?: unknown): void {
