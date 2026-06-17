@@ -34,6 +34,7 @@ export {
 } from "./builtins/definitions";
 
 // Contrats (types)
+export type { LicensePlan, Capability, LicenseValidator } from "./types/license";
 export type { CoreDependencies } from "./core/Core";
 export type { Command, CommandFactory, EditorContext } from "./command-bus/CommandBus";
 export type { ObjectDefinition, JSONSchema } from "./object-registry/ObjectRegistry";
