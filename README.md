@@ -20,6 +20,7 @@ packages/
   sticker-engine/     catégories, formats, animations, registry
   transition-engine/  catalogue de transitions + contrainte d'overlap
   audio-engine/       plan de mixage, gain avec fades, validation des rôles
+  camera/             session de capture headless (état optique, capture → projet)
   runtime/            machine de transport play/pause/seek/loop
   timeline/           conversion temps↔pixels + moteur de snap
   background-jobs/    file d'export non-bloquante (JobQueue)
