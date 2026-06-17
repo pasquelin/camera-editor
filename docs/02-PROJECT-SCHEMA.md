@@ -240,12 +240,15 @@ interface ProjectManager {
 - `aspectRatio` est un paramètre de projet, exposé dans la config de création
   (cf. [12-CONFIGURATION](./12-CONFIGURATION.md)).
 
-## Limites V1
+## Configuration
 
-- `tracks.video` ≤ 3 entrées actives simultanées, `tracks.audio` ≤ 5
-  (contraintes appliquées à la création/insertion, pas au schéma JSON lui-même).
-- `VideoObject.speed` ∈ [0.25, 4.0] ; `AudioObject.speed` ∈ [0.5, 2.0].
-- Snapshots bornés par l'undo stack (50 états max).
+- `maxVideoTracks` : 3 par défaut, configurable via `config.limits`
+  (appliqué à la création/insertion, pas au schéma JSON lui-même).
+- `maxAudioTracks` : 5 par défaut, configurable via `config.limits`.
+- `VideoObject.speed` : plage `[0.25, 4.0]` par défaut, ajustable via configuration.
+- `AudioObject.speed` : plage `[0.5, 2.0]` par défaut, ajustable via configuration.
+- `undoStackSize` : 50 états par défaut, configurable via `config.history`.
+  → [12-CONFIGURATION](./12-CONFIGURATION.md).
 
 ## Décisions liées
 

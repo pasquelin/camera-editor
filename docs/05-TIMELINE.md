@@ -13,10 +13,10 @@ contrôle pas la lecture, elle **délègue** au Runtime.
 
 ### Tracks
 
-| Track | Limite | Contenu |
+| Track | Défaut | Contenu |
 |-------|--------|---------|
-| `VideoTrack` | **max 3** simultanées | `VideoObject`, `ImageObject` |
-| `AudioTrack` | **max 5** simultanées | `AudioObject` |
+| `VideoTrack` | **3 par défaut** (configurable) | `VideoObject`, `ImageObject` |
+| `AudioTrack` | **5 par défaut** (configurable) | `AudioObject` |
 | `TextTrack` | — | `TextObject` |
 | `StickerTrack` | — | `StickerObject` |
 | `FilterTrack` | — | `FilterObject` |
@@ -117,13 +117,12 @@ const pan = Gesture.Pan()
 - Composant `<Timeline />` remplaçable par slot ; le mode **headless** expose
   `useTimeline(editor)` → `{ tracks, zoom, snap, … }`.
 - `SnapEngine.threshold` et le pas de zoom sont paramétrables.
-
-## Limites V1
-
-- **Max 3 VideoTrack**, **max 5 AudioTrack** simultanées (appliqué à l'insertion).
-- Snap sur points discrets (bords, tête de lecture, marqueurs) ; pas de grille
-  rythmique (beat-snap) en V1.
-- Pas de groupes/nesting de clips.
+- `maxVideoTracks` : 3 par défaut, configurable via `config.limits`.
+- `maxAudioTracks` : 5 par défaut, configurable via `config.limits`.
+- **Snap rythmique (beat-snap)** : grille rythmique configurable via `SnapEngine`,
+  en complément du snap sur points discrets (bords, tête de lecture, marqueurs).
+- **Groupes et nesting de clips** : les clips peuvent être groupés et imbriqués
+  pour une édition structurée multi-niveaux.
 
 ## Décisions liées
 

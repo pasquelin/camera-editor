@@ -17,25 +17,25 @@ Les documents sont numérotés par couche de profondeur, du *pourquoi* vers le *
 | 03 | [RUNTIME](./03-RUNTIME.md) | Orchestrateur play/pause/seek, clock partagée | ✅ stable |
 | 04 | [RENDERER](./04-RENDERER.md) | Preview temps réel + Export offline | ✅ stable |
 | 05 | [TIMELINE](./05-TIMELINE.md) | Tracks, gestes, snap, synchro clock | ✅ stable |
-| 06 | [PLUGIN-API](./06-PLUGIN-API.md) | Système de plugins, points d'extension | 🟡 passe 3 |
-| 07 | [LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md) | Plans, validation, expiration gracieuse | 🟡 passe 3 |
-| 08 | [ASSET-MANAGER](./08-ASSET-MANAGER.md) | Assets, cache, ResourcePacks | 🟡 passe 3 |
-| 09 | [EXPORT-ENGINE](./09-EXPORT-ENGINE.md) | Pipeline d'export, formats, codecs | 🟡 passe 3 |
+| 06 | [PLUGIN-API](./06-PLUGIN-API.md) | Système de plugins, points d'extension | ✅ stable |
+| 07 | [LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md) | Plans, validation, expiration gracieuse | ✅ stable |
+| 08 | [ASSET-MANAGER](./08-ASSET-MANAGER.md) | Assets, cache, ResourcePacks | ✅ stable |
+| 09 | [EXPORT-ENGINE](./09-EXPORT-ENGINE.md) | Pipeline d'export, formats, codecs | ✅ stable |
 | 10 | [ROADMAP](./10-ROADMAP.md) | Phases 0→4 d'exécution | 🟡 passe 4 |
 | 11 | [MONOREPO](./11-MONOREPO.md) | pnpm + Turborepo, packages, publication | ✅ stable |
 | 12 | [CONFIGURATION](./12-CONFIGURATION.md) | **Contrat de paramétrage complet** | ✅ stable |
 | 13 | [STATE-DATAFLOW](./13-STATE-DATAFLOW.md) | Zustand, Reanimated, source de vérité | ✅ stable |
 | 14 | [TESTING](./14-TESTING.md) | Stratégie de test cross-packages | 🟡 passe 4 |
-| 15 | [NATIVE-CONFIG-PLUGINS](./15-NATIVE-CONFIG-PLUGINS.md) | Modules natifs, config plugins, New Arch | 🟡 passe 3 |
-| 16 | [CAMERA](./16-CAMERA.md) | Capture photo/vidéo, ratios, vision-camera | 🟡 passe 3 |
-| 17 | [PHOTO-EDITOR](./17-PHOTO-EDITOR.md) | Crop, rotate, dessin, overlays, export image | 🟡 passe 3 |
-| 18 | [VIDEO-EDITOR](./18-VIDEO-EDITOR.md) | Trim, split, merge, speed, reverse | 🟡 passe 3 |
-| 19 | [TEXT-ENGINE](./19-TEXT-ENGINE.md) | Styles, animations, Font Manager | 🟡 passe 3 |
-| 20 | [STICKER-ENGINE](./20-STICKER-ENGINE.md) | PNG/SVG/GIF/Lottie, gestes, catégories | 🟡 passe 3 |
-| 21 | [FILTER-ENGINE](./21-FILTER-ENGINE.md) | Catalogue de filtres, Skia + shaders GPU | 🟡 passe 3 |
-| 22 | [AUDIO-ENGINE](./22-AUDIO-ENGINE.md) | Trim, fades, mix + Music Library | 🟡 passe 3 |
-| 23 | [TRANSITION-ENGINE](./23-TRANSITION-ENGINE.md) | Transitions entre clips contigus | 🟡 passe 3 |
-| 24 | [UI-COMPONENTS](./24-UI-COMPONENTS.md) | Catalogue des composants par défaut + theming | 🟡 passe 3 |
+| 15 | [NATIVE-CONFIG-PLUGINS](./15-NATIVE-CONFIG-PLUGINS.md) | Modules natifs, config plugins, New Arch | ✅ stable |
+| 16 | [CAMERA](./16-CAMERA.md) | Capture photo/vidéo, ratios, vision-camera | ✅ stable |
+| 17 | [PHOTO-EDITOR](./17-PHOTO-EDITOR.md) | Crop, rotate, dessin, overlays, export image | ✅ stable |
+| 18 | [VIDEO-EDITOR](./18-VIDEO-EDITOR.md) | Trim, split, merge, speed, reverse | ✅ stable |
+| 19 | [TEXT-ENGINE](./19-TEXT-ENGINE.md) | Styles, animations, Font Manager | ✅ stable |
+| 20 | [STICKER-ENGINE](./20-STICKER-ENGINE.md) | PNG/SVG/GIF/Lottie, gestes, catégories | ✅ stable |
+| 21 | [FILTER-ENGINE](./21-FILTER-ENGINE.md) | Catalogue de filtres, Skia + shaders GPU | ✅ stable |
+| 22 | [AUDIO-ENGINE](./22-AUDIO-ENGINE.md) | Trim, fades, mix + Music Library | ✅ stable |
+| 23 | [TRANSITION-ENGINE](./23-TRANSITION-ENGINE.md) | Transitions entre clips contigus | ✅ stable |
+| 24 | [UI-COMPONENTS](./24-UI-COMPONENTS.md) | Catalogue des composants par défaut + theming | ✅ stable |
 | 25 | [DEVELOPER-DOCS](./25-DEVELOPER-DOCS.md) | Docusaurus, TSDoc, CLI, distribution | 🟡 passe 4 |
 
 Les [ADR](./ADR/) (Architecture Decision Records) capturent les **décisions
@@ -72,8 +72,7 @@ Chaque document suit la même ossature :
 ## Purpose          — pourquoi ce module existe, en 3 lignes
 ## Concepts         — vocabulaire et idées clés
 ## Interfaces (TS)  — contrats publics, types exportés
-## Configuration    — points de paramétrage (flags, tokens, slots, handlers)
-## Limites V1       — contraintes assumées (cf. tableau du brief)
+## Configuration    — points de paramétrage (flags, tokens, slots, handlers, défauts ajustables)
 ## Décisions liées  — liens vers les ADR
 ## Cross-refs       — liens vers les autres docs
 ```

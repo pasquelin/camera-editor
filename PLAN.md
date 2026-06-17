@@ -5,12 +5,14 @@
 Projet greenfield. On écrit le **blueprint de documentation** qui sert de source de
 vérité pour construire le SDK React Native + Expo sur plusieurs années (dev solo).
 Les docs *sont* le plan d'architecture : précises, ancrées sur des décisions (ADR),
-exhaustives vis-à-vis du brief (rien repoussé à une « V2 » ; les *limites V1* du
-brief restent des contraintes assumées). Travail séquencé en **plusieurs passes**.
+exhaustives vis-à-vis du brief. **Tout est livré en V1, rien n'est reporté** : il n'y
+a pas de section « Limites » ; les paramètres chiffrés du brief (tracks, undo…) sont
+des **défauts configurables**, et 4K/H.265 sont des **tiers de licence** (modèle
+commercial), pas des limites de version. Travail séquencé en **plusieurs passes**.
 
 ### Décisions actées
 - Profondeur : blueprint complet avec **interfaces TS publiques**, décisions, points
-  de config, limites V1 — pas de code d'implémentation.
+  de config — pas de code d'implémentation.
 - Monorepo : **pnpm + Turborepo**.
 - Périmètre : **fondations d'abord**, puis itérations par passe.
 
@@ -23,7 +25,7 @@ brief restent des contraintes assumées). Travail séquencé en **plusieurs pass
    worklets Reanimated, Metro monorepo, EAS).
 
 Template de chaque doc : `Purpose → Concepts → Interfaces (TS) → Configuration →
-Limites V1 → Décisions liées (ADR) → Cross-refs`.
+Décisions liées (ADR) → Cross-refs`.
 
 ## Arborescence (cible complète)
 
@@ -54,14 +56,18 @@ ADRs : `0000`, `0001` (pnpm+turbo), `0002` (ffmpeg fork+fallback), `0004` (clock
 Stubs structurés (périmètre figé) pour tous les autres docs → arborescence
 représentant 100 % du brief.
 
-### 🟡 Passe 2 — Moteurs temps réel
-Détailler `03-RUNTIME`, `04-RENDERER`, `05-TIMELINE` + ADR 0003 (Skia vs vidéo native).
+### ✅ Passe 2 — Moteurs temps réel (livrée)
+`03-RUNTIME`, `04-RENDERER`, `05-TIMELINE` (✅ stable) + ADR `0003` (Skia vs vidéo native).
 
-### 🟡 Passe 3 — Extensibilité, moteurs & distribution
-Détailler `06`–`09`, `15`–`24` + ADR 0012 (vision-camera), 0013 (security).
+### ✅ Passe 3 — Extensibilité, moteurs & distribution (livrée)
+`06`–`09`, `15`–`24` (✅ stable) + ADR `0012` (vision-camera), `0013` (security).
 
 ### 🟡 Passe 4 — Qualité & exécution
 Détailler `14-TESTING`, `10-ROADMAP`, `25-DEVELOPER-DOCS` + revue de cohérence globale.
+
+> Note : le SDK ne pratique **aucun gating de version** — tout est livré en V1. Les
+> docs n'ont pas de section « Limites » ; les paramètres chiffrés sont des défauts
+> configurables, 4K/H.265 des tiers de licence.
 
 ## Vérification
 - Couverture : chaque section du brief a un foyer dans l'arborescence.

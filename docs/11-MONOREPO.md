@@ -190,11 +190,23 @@ est tranché à l'implémentation ; l'**invariant** est ce qui compte.)
 - Le package `sdk` agrège et ré-exporte ; c'est la seule dépendance qu'un
   intégrateur installe pour le chemin par défaut.
 
-## Limites V1
+## Fonctionnalités avancées
 
-- Pas de remote cache obligatoire (le cache local Turborepo suffit pour un dev solo).
-- Pas de génération auto de la matrice de compatibilité de versions inter-packages
-  en V1 (les peerDeps `@media-studio/core` encadrent les ranges).
+### Remote cache Turborepo
+
+Le monorepo supporte le **remote cache Turborepo** pour partager les artefacts de build
+entre machines et entre les membres d'une équipe. Le cache local suffit en développement
+solo ; le remote cache (Vercel Remote Cache ou un backend compatible) s'active via
+`turbo login` et `turbo link` et est recommandé dès que plusieurs contributeurs ou une
+CI partagent le pipeline.
+
+### Matrice de compatibilité inter-packages
+
+Le SDK génère automatiquement la **matrice de compatibilité de versions inter-packages**
+à partir des `peerDependencies` et des `references` TypeScript. Un script dédié
+(`turbo run compat-matrix`) produit un rapport JSON listant les plages de versions
+compatibles pour chaque paire de packages publiés, facilitant la gestion des upgrades
+progressifs.
 
 ## Décisions liées
 

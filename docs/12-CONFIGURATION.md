@@ -48,7 +48,7 @@ interface MediaStudioConfig {
   filters?: FilterDefinition[];    // catalogue de filtres custom
   musicLibrary?: MusicSource;      // bibliothèque audio custom
 
-  // Limites runtime (dans les bornes V1)
+  // Valeurs par défaut des paramètres runtime (entièrement ajustables par l'intégrateur)
   limits?: Partial<EditorLimits>;
 }
 
@@ -208,21 +208,25 @@ c'est la garantie qu'aucune capacité n'est cachée derrière l'UI.
 6. **Ajouter une feature** : enregistrer un plugin (type d'objet + commandes + panel).
    → [06-PLUGIN-API](./06-PLUGIN-API.md).
 
-## Limites V1
+## Valeurs par défaut et ajustements runtime
 
-- Les `limits` configurables restent **bornées par les limites V1** : on peut
-  baisser `maxVideoTracks` sous 3, jamais au-dessus.
-- Les capacités Pro/Enterprise demandées sans licence valide retombent en mode
-  gracieux (warning + fallback), jamais en crash.
-- Le thème est un système de **tokens**, pas de CSS arbitraire : on paramètre
-  l'apparence dans les axes prévus (couleurs, fonts, radius, spacing, icônes).
+L'objet `EditorLimits` expose les **valeurs par défaut entièrement ajustables** des
+paramètres de capacité de l'éditeur. Ce ne sont pas des plafonds imposés : l'intégrateur
+peut librement les augmenter ou les abaisser en fonction de ses besoins et des
+contraintes matérielles de ses utilisateurs.
+
+Les capacités Pro/Enterprise demandées sans licence valide retombent en mode gracieux
+(warning + fallback), jamais en crash.
+
+Le thème est un système de **tokens**, pas de CSS arbitraire : on paramètre l'apparence
+dans les axes prévus (couleurs, fonts, radius, spacing, icônes).
 
 ```ts
 interface EditorLimits {
-  maxVideoTracks: number;   // ≤ 3
-  maxAudioTracks: number;   // ≤ 5
-  previewFps: number;       // ≤ 30
-  undoStackSize: number;    // ≤ 50
+  maxVideoTracks: number;   // défaut : 3 (configurable)
+  maxAudioTracks: number;   // défaut : 5 (configurable)
+  previewFps: number;       // défaut : 30 (configurable)
+  undoStackSize: number;    // défaut : 50 (configurable)
 }
 ```
 

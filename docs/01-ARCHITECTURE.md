@@ -122,7 +122,7 @@ EventBus ──▶ Zustand stores         ──▶ re-render ciblé de l'UI
 ```
 
 - Le **CommandBus** prend un snapshot avant les opérations destructives, empile la
-  commande (`undoStack`, max 50), et délègue l'application à `ProjectManager`.
+  commande (`undoStack`, taille configurable — défaut 50), et délègue l'application à `ProjectManager`.
 - Le **ProjectManager** est la seule source de vérité ; il émet les événements.
 - Les abonnés (Renderer, stores Zustand, Timeline) réagissent en lecture seule.
   → mapping état/réactivité détaillé dans [13-STATE-DATAFLOW](./13-STATE-DATAFLOW.md).
@@ -177,7 +177,7 @@ Toutes les mutations passent par ces namespaces. Un plugin en ajoute via
 | `asset`    | import, delete, cache |
 
 API : `editor.execute(command, payload)`, `editor.undo()`, `editor.redo()`.
-Stacks `undoStack` (max **50**) / `redoStack` ; snapshot avant opération destructive ;
+Stacks `undoStack` / `redoStack` ; snapshot avant opération destructive ;
 seek/zoom **non enregistrés** (preview).
 
 ## Annexe B — Catalogue des événements (EventBus)
@@ -203,12 +203,6 @@ editor.on("asset:imported",    (asset: Asset) => {});
 editor.on("license:validated", () => {});
 editor.on("license:expired",   () => {});
 ```
-
-## Limites V1
-
-- Pas de multi-pass GPU (effets combinés limités) — contrainte du Renderer.
-- Le Core ne fait **aucun** accès réseau, même pour la licence (déléguée).
-- L'orchestration reste mono-projet (pas de collaboration temps réel en V1).
 
 ## Décisions liées
 

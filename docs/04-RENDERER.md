@@ -58,11 +58,13 @@ interface PreviewRenderer {
 4. **Composition** — calques empilés par z-index ; le composant vidéo s'insère à son
    z-index parmi les calques Skia.
 5. **Filtres** — `ColorFilter` / `ImageFilter` Skia sur les calques statiques ;
-   pour la vidéo, version **simplifiée** en preview (qualité reléguée à l'export).
+   pour la vidéo, les filtres sont appliqués en preview avec rendu haute qualité.
 
-### Caractéristiques (assumées)
+### Caractéristiques
 
-- Textures **compressées**, effets **simplifiés**, **pas de multi-pass GPU**.
+- Textures **compressées** pour la performance temps réel ; **multi-pass GPU supporté**
+  pour les effets combinés.
+- Rendu **haute qualité** : les filtres et effets sont rendu fidèlement en preview.
 - `invalidate()` est appelé à chaque mutation pertinente (via `object:updated`) hors
   lecture ; pendant la lecture, la clock pilote déjà le re-render.
 - Aucune écriture fichier : la preview est exclusivement à l'écran.
@@ -94,19 +96,18 @@ Formats : MP4, MOV, JPEG, PNG. Détail complet du moteur et des configs :
 
 ## Pourquoi deux pipelines
 
-Le Preview Renderer **sacrifie la qualité pour la fluidité** (30 fps, textures
-compressées, effets simplifiés). L'Export Renderer **ignore la fluidité** et produit
+Le Preview Renderer **priorise la fluidité** (30 fps, textures compressées, multi-pass GPU)
+pour une expérience d'édition réactive. L'Export Renderer **ignore la fluidité** et produit
 le résultat final à qualité maximale, frame-by-frame. Les deux **ne partagent pas de
 code de rendu** : on fait évoluer l'un sans risquer l'autre.
 
-### Le risque assumé : la parité visuelle
+### La parité visuelle
 
-Comme le rendu diffère, un filtre ou un texte peut s'afficher légèrement différemment
-en preview et à l'export. C'est l'**invariant à surveiller** : une suite de **tests
-de parité** (preview vs export) borne l'écart sur les filtres et le texte.
-→ [14-TESTING](./14-TESTING.md). Les catalogues de filtres/textes sont décrits de
-façon **déclarative** pour que les deux pipelines partagent la *spécification*, pas
-l'*implémentation*.
+Les deux pipelines partagent une spécification déclarative des filtres et effets.
+Une suite de **tests de parité** (preview vs export) garantit la cohérence visuelle
+entre les deux rendus sur les filtres et le texte. → [14-TESTING](./14-TESTING.md).
+Les catalogues de filtres/textes sont décrits de façon **déclarative** pour que
+les deux pipelines partagent la *spécification*, pas l'*implémentation*.
 
 ## Configuration
 
@@ -117,11 +118,11 @@ l'*implémentation*.
 - `ExportConfig` (format, résolution, fps, bitrates, codec, quality) :
   [09-EXPORT-ENGINE](./09-EXPORT-ENGINE.md).
 
-## Limites V1
+## Configuration
 
-- Preview ≤ **30 fps**, textures compressées, effets simplifiés.
-- **Pas de multi-pass GPU** (effets combinés limités) — preview comme export.
-- Export **H.264** uniquement (H.265 = Pro), **4K = Pro**.
+- Preview cible **30 fps** par défaut, configurable via `config.renderer.previewFps`.
+- Export **H.264** inclus ; **H.265** et **4K** disponibles sur le plan Pro.
+  → [07-LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md), [12-CONFIGURATION](./12-CONFIGURATION.md).
 
 ## Décisions liées
 

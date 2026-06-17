@@ -76,23 +76,33 @@ La vision « tout paramétrable » se concrétise par trois leviers, détaillés
 - **Slots / render-props** — remplacer n'importe quel composant d'UI.
 - **Mode headless** — piloter le SDK par API sans aucune UI fournie.
 
-## Limites V1
+## Paramètres par défaut (entièrement configurables)
 
-Contraintes **explicites et non négociables** pour éviter le scope creep
-(reprises du brief, communes à tout le SDK) :
+Le SDK livre **toutes** ses capacités dès la première version. Les valeurs ci-dessous
+sont des **défauts ajustables** par l'intégrateur (via `config.limits` / `config.renderer`),
+pas des plafonds imposés. → [12-CONFIGURATION](./12-CONFIGURATION.md).
 
-| Domaine | Limite V1 |
-|---------|-----------|
-| Video tracks | 3 simultanées max |
-| Audio tracks | 5 simultanées max |
-| Preview | 30 fps max, textures compressées, effets simplifiés |
-| Export codec | H.264 uniquement (H.265 = plan Pro) |
-| Export résolution | 4K réservé au plan Pro |
-| Rendu GPU | Pas de multi-pass |
-| Undo stack | 50 états max |
+| Domaine | Valeur par défaut (configurable) |
+|---------|----------------------------------|
+| Video tracks | 3 par défaut |
+| Audio tracks | 5 par défaut |
+| Preview | 30 fps par défaut, multi-pass GPU supporté |
+| Undo stack | 50 états par défaut |
 
-**Non-goals V1** (livrés par plugins externes, dépôts séparés) :
-Collaboration, **AI**, **Face Tracking**, **Cloud Render**.
+### Tiers de licence (modèle commercial, pas une limite de version)
+
+Toutes les fonctionnalités existent dès maintenant ; certaines sont rattachées à un
+**plan commercial** (cf. [07-LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md)) :
+
+- **Pro** : export 4K, H.265, effets avancés, plugins premium.
+- **Enterprise** : whitelabel, support, SLA, analytics.
+
+### Écosystème de plugins
+
+Des domaines entiers sont livrés sous forme de **plugins de l'écosystème** (dépôts
+séparés), tous disponibles : **AI** (`media-studio-ai`), **Face Tracking**
+(`media-studio-face-tracking`), **Collaboration** (`media-studio-collaboration`),
+**Cloud Render** (`media-studio-cloud-render`). → [06-PLUGIN-API](./06-PLUGIN-API.md).
 
 ## Décisions liées
 

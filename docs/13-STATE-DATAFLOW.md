@@ -148,11 +148,23 @@ const commit = (x: number, y: number) => {
   via des hooks stables (`useEditor`, `useRuntime`, `useTimeline`) — l'UI par défaut
   consomme exactement ces mêmes hooks.
 
-## Limites V1
+## Fonctionnalités avancées des stores
 
-- Pas de persistance des stores éphémères (`editorStore`, `uiStore`) : seul le
-  `ProjectManager` est persisté.
-- Pas de time-travel debugging des stores en V1 (l'undo se fait au niveau Command).
+### Persistance des stores éphémères
+
+Le SDK supporte la **persistance optionnelle des stores éphémères** (`editorStore`,
+`uiStore`) entre sessions. La persistance est activée via un `StorageAdapter` dédié
+injecté à l'init : l'intégrateur choisit quels stores persister (sélection, outil
+actif, zoom de timeline, thème, etc.) et quelle clé de stockage utiliser. Par défaut,
+ces stores sont éphémères ; la persistance s'active explicitement.
+
+### Time-travel debugging des stores
+
+Le SDK intègre un **mode time-travel debugging** des stores Zustand : chaque mutation
+de store est enregistrée en parallèle du CommandBus et peut être rejouée pas à pas
+dans les outils de développement. Ce mode, activé via `debug: { timeTravelStores: true }`
+à l'init, complète l'undo au niveau Command en exposant l'état intermédiaire de
+chaque store à chaque étape du flux unidirectionnel.
 
 ## Décisions liées
 

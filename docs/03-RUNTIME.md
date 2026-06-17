@@ -137,16 +137,13 @@ l'Audio Engine se resynchronise (micro-seek). Détail : [22-AUDIO-ENGINE](./22-A
 
 - Aucune capacité directe ne dépend d'un flag : le Runtime est requis dès qu'il y a
   lecture (`mode="video"`). En `mode="photo"` il n'est pas monté.
-- `playbackRate` borné à `[0.25, 4.0]` (cohérent avec `VideoObject.speed`).
+- `playbackRate` : plage `[0.25, 4.0]` par défaut, configurable (cohérent avec `VideoObject.speed`).
+- **Lecture inversée temps réel** : le `reversed` d'un `VideoObject` est un attribut
+  de rendu interprété par le Runtime ; la lecture inversée est supportée au niveau clip.
+- **Courbes de vitesse (ramping)** : le `playbackRate` peut être modulé dynamiquement
+  via les courbes de vitesse configurables par clip.
 - Le mode **headless** expose `useRuntime(editor)` →
   `{ play, pause, seek, currentTime, isPlaying, … }`. → [12-CONFIGURATION](./12-CONFIGURATION.md).
-
-## Limites V1
-
-- Pas de lecture inversée temps réel globale (le `reversed` d'un `VideoObject` est un
-  attribut de rendu, pas un mode de transport du Runtime).
-- `playbackRate` global ; pas de courbes de vitesse (ramping) en V1.
-- Mono-projet : une seule clock active à la fois.
 
 ## Décisions liées
 
