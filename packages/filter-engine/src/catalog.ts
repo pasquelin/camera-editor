@@ -68,10 +68,11 @@ export function createFilterCatalog(config: FilterCatalogConfig = {}): FilterCat
     byId.set(filter.id, filter);
   }
 
+  const list = (): FilterDescriptor[] => [...byId.values()];
   return {
-    list: () => [...byId.values()],
+    list,
     get: (id) => byId.get(id) ?? null,
     has: (id) => byId.has(id),
-    byCategory: (category) => [...byId.values()].filter((f) => f.category === category),
+    byCategory: (category) => list().filter((f) => f.category === category),
   };
 }
