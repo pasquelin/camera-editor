@@ -37,6 +37,8 @@ Les documents sont numérotés par couche de profondeur, du *pourquoi* vers le *
 | 23 | [TRANSITION-ENGINE](./23-TRANSITION-ENGINE.md) | Transitions entre clips contigus | ✅ stable |
 | 24 | [UI-COMPONENTS](./24-UI-COMPONENTS.md) | Catalogue des composants par défaut + theming | ✅ stable |
 | 25 | [DEVELOPER-DOCS](./25-DEVELOPER-DOCS.md) | Docusaurus, TSDoc, CLI, distribution | ✅ stable |
+| 26 | [STUDIO-FLOW](./26-STUDIO-FLOW.md) | **Composant Studio + machine à états interne** (capture→edit→preview, zéro routeur) | ✅ stable |
+| 27 | [BACKGROUND-JOBS](./27-BACKGROUND-JOBS.md) | Aperçu immédiat + export non-bloquant (vignette, %) | ✅ stable |
 
 Les [ADR](./ADR/) (Architecture Decision Records) capturent les **décisions
 structurantes** et leurs alternatives écartées. Voir [ADR/0000-template](./ADR/0000-template.md).

@@ -53,18 +53,26 @@ import { MediaStudio } from "@media-studio/sdk";
 
 await MediaStudio.initialize({ licenseKey: "XXXX-XXXX" }); // licence optionnelle
 
+// UN composant embarquable, qui orchestre lui-même les étapes
+// (Caméra + toggle Photo/Vidéo → Éditeur → Aperçu). Pas un routeur : c'est ton app
+// qui garde sa navigation. → 26-STUDIO-FLOW
 <MediaStudio
-  mode="video"            // "photo" | "video" | "camera"
-  enableCamera
+  flow={{ steps: ["capture", "edit", "preview"], initialMode: "video" }}
   enableAudio
   enableFilters
   enableText
   enableStickers
-  enableTimeline
-  onExport={(uri) => {}}
+  onComplete={(result) => {}}   // projet finalisé
+  onExport={(uri) => {}}         // asset exporté (job d'arrière-plan)
   onError={(err) => {}}
 />
 ```
+
+L'intégrateur monte **un seul composant** : il ne câble pas un méga-composant à
+options. Le parcours est orchestré en interne par une **machine à états**
+([26-STUDIO-FLOW](./26-STUDIO-FLOW.md)), l'export tourne en **arrière-plan**
+([27-BACKGROUND-JOBS](./27-BACKGROUND-JOBS.md)), et **tout** reste paramétrable
+(y compris afficher ou non l'aperçu).
 
 ## Configuration
 

@@ -79,6 +79,18 @@ interface UiStore {
   timelineZoom: number;
   theme: Theme;
 }
+
+// 5) studioStore — étape courante du composant Studio (machine à états interne)
+interface StudioStore {
+  step: "capture" | "edit" | "preview";   // vue rendue par <MediaStudio />
+  mode: "photo" | "video";                 // toggle (pilote l'éditeur)
+}                                          // → 26-STUDIO-FLOW (pas de routeur)
+
+// 6) jobStore — jobs d'export en arrière-plan (non-bloquants)
+interface JobStore {
+  jobsById: Record<string, ExportJob>;     // id → { status, progress, thumbnailUri, … }
+  activeJobIds: string[];
+}                                          // → 27-BACKGROUND-JOBS
 ```
 
 ### Pourquoi `currentTime` n'est pas dans Zustand

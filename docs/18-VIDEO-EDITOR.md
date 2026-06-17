@@ -11,6 +11,11 @@ mutations sont dispatché via le `CommandBus`, ce qui rend chaque action
 undo-able et réplicable. Le Video Editor s'appuie sur le Runtime pour la
 preview (play / pause / seek / loop) sans jamais piloter l'export directement.
 
+Il partage **le même habillage** que le Photo Editor (design unifié — barre d'outils,
+tiroir d'outils, panneau timeline, zone d'aperçu identiques), pour une expérience
+cohérente quel que soit le type de média. → [24-UI-COMPONENTS](./24-UI-COMPONENTS.md),
+[26-STUDIO-FLOW](./26-STUDIO-FLOW.md).
+
 ## Concepts
 
 ### Séparation Édition / Preview / Export

@@ -27,10 +27,19 @@ dans [12-CONFIGURATION](./12-CONFIGURATION.md) :
 | **2 — Slots** | Substituer un composant via `slots.AudioPicker = MyPicker`. | Un composant à la fois. |
 | **3 — Headless** | Ne pas utiliser le package `ui` du tout ; piloter les hooks. | Intégralité de l'UI. |
 
+### Le composant orchestrateur
+
+`<MediaStudio />` est le **composant d'entrée unique** : il enchaîne lui-même les
+étapes (Caméra → Éditeur → Aperçu) via une **machine à états interne**, sans aucun
+routeur ([26-STUDIO-FLOW](./26-STUDIO-FLOW.md)). L'intégrateur monte ce seul composant ;
+il n'a pas à câbler les sous-vues ni leurs events. Les composants ci-dessous restent
+**exposés et composables** pour qui veut piloter les étapes lui-même.
+
 ### Catalogue des composants
 
 | Composant | Module associé | Slot correspondant |
 |-----------|---------------|-------------------|
+| `<MediaStudio />` | [26-STUDIO-FLOW](./26-STUDIO-FLOW.md) | _(orchestrateur — non slotable)_ |
 | `<CameraView />` | [16-CAMERA](./16-CAMERA.md) | `slots.CameraView` |
 | `<PhotoEditor />` | [17-PHOTO-EDITOR](./17-PHOTO-EDITOR.md) | `slots.PhotoEditor` |
 | `<VideoEditor />` | [18-VIDEO-EDITOR](./18-VIDEO-EDITOR.md) | `slots.VideoEditor` |
@@ -40,7 +49,23 @@ dans [12-CONFIGURATION](./12-CONFIGURATION.md) :
 | `<FilterPicker />` | [21-FILTER-ENGINE](./21-FILTER-ENGINE.md) | `slots.FilterPicker` |
 | `<AudioPicker />` | [22-AUDIO-ENGINE](./22-AUDIO-ENGINE.md) | `slots.AudioPicker` |
 | `<ExportPanel />` | [09-EXPORT-ENGINE](./09-EXPORT-ENGINE.md) | `slots.ExportPanel` |
+| `<ExportProgress />` | [27-BACKGROUND-JOBS](./27-BACKGROUND-JOBS.md) | `slots.ExportProgress` |
 | `<ToolBar />` | _(transversal)_ | `slots.Toolbar` |
+
+### Éditeur unifié — même design photo et vidéo
+
+L'éditeur Photo et l'éditeur Vidéo partagent **un seul habillage** : barre d'outils,
+tiroir d'outils, panneau de calques/timeline et zone d'aperçu sont **identiques** pour
+la cohérence visuelle. Seuls les **outils proposés** et l'affichage de la timeline
+s'adaptent au contenu (la timeline apparaît dès que le projet a une durée — vidéo ou
+photo animée). Le thème (tokens) s'applique uniformément aux deux.
+→ [17-PHOTO-EDITOR](./17-PHOTO-EDITOR.md), [18-VIDEO-EDITOR](./18-VIDEO-EDITOR.md).
+
+### `<ExportProgress />` — vignette de progression
+
+Affiche une **vignette + le %** de l'export en arrière-plan, par-dessus l'éditeur, à la
+TikTok, **sans bloquer** l'interaction : l'utilisateur continue d'éditer/naviguer
+pendant le rendu. → [27-BACKGROUND-JOBS](./27-BACKGROUND-JOBS.md).
 
 ### Theming — design tokens
 

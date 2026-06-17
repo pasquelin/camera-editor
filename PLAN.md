@@ -40,7 +40,8 @@ docs/
   16-CAMERA · 17-PHOTO-EDITOR · 18-VIDEO-EDITOR
   19-TEXT-ENGINE · 20-STICKER-ENGINE · 21-FILTER-ENGINE
   22-AUDIO-ENGINE · 23-TRANSITION-ENGINE · 24-UI-COMPONENTS · 25-DEVELOPER-DOCS
-  ADR/  (0000 template + décisions structurantes)
+  26-STUDIO-FLOW · 27-BACKGROUND-JOBS
+  ADR/  (0000 template + décisions structurantes, jusqu'à 0016)
 ```
 
 ## État des passes
@@ -62,8 +63,21 @@ représentant 100 % du brief.
 ### ✅ Passe 3 — Extensibilité, moteurs & distribution (livrée)
 `06`–`09`, `15`–`24` (✅ stable) + ADR `0012` (vision-camera), `0013` (security).
 
-### 🟡 Passe 4 — Qualité & exécution
-Détailler `14-TESTING`, `10-ROADMAP`, `25-DEVELOPER-DOCS` + revue de cohérence globale.
+### ✅ Passe 4 — Qualité & exécution (livrée)
+`14-TESTING`, `10-ROADMAP`, `25-DEVELOPER-DOCS` (✅ stable) + revue de cohérence globale.
+
+### ✅ Passe 5 — Composant Studio & UX async (livrée)
+- `26-STUDIO-FLOW` : **UN composant** `<MediaStudio />`, machine à états interne
+  (`capture → edit → preview`), **zéro routeur** (c'est un composant, pas une app) ;
+  toggle Photo/Vidéo pilotant l'éditeur ; **éditeur au design unifié** photo/vidéo ;
+  étapes et **aperçu entièrement paramétrables** (`flow.preview`, `flow.steps`…).
+- `27-BACKGROUND-JOBS` : **aperçu immédiat** + **export en job d'arrière-plan** (snapshot,
+  %, vignette, non-bloquant, projet éditable pendant le rendu, annulable) — UX TikTok.
+- **Parité photo ↔ vidéo** : audio/filtres/stickers/texte/animations sur photo comme
+  vidéo ; photo animée/sonore exportable en MP4.
+- ADR `0015` (machine à états interne, pas de routeur), `0016` (export jobs + snapshot).
+- MAJ : `00-VISION`, `12-CONFIGURATION`, `13-STATE-DATAFLOW`, `24-UI-COMPONENTS`,
+  `17-PHOTO-EDITOR`, `18-VIDEO-EDITOR`, `22-AUDIO-ENGINE`, `09-EXPORT-ENGINE`, `README`.
 
 > Note : le SDK ne pratique **aucun gating de version** — tout est livré en V1. Les
 > docs n'ont pas de section « Limites » ; les paramètres chiffrés sont des défauts

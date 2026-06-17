@@ -6,10 +6,24 @@
 
 Éditeur d'images basé sur le **PreviewRenderer Skia**. Il offre un ensemble de
 transformations géométriques, un mode de dessin libre sur canvas, la composition
-d'overlays (texte, stickers, filtres) et l'export vers JPEG ou PNG. Toutes les
-mutations passent par le `CommandBus`, garantissant l'undo/redo et la cohérence
-du schéma. Le Photo Editor est activable indépendamment du Video Editor ; les
-deux peuvent coexister dans une même intégration.
+d'overlays (texte, stickers, filtres) et l'export. Toutes les mutations passent par le
+`CommandBus`, garantissant l'undo/redo et la cohérence du schéma. Le Photo Editor
+partage **le même habillage** que le Video Editor (design unifié, cf.
+[24-UI-COMPONENTS](./24-UI-COMPONENTS.md)) ; les deux peuvent coexister dans une même
+intégration.
+
+### Parité totale avec la vidéo
+
+Une photo n'est pas bridée : **audio, filtres, stickers, texte et animations** sont
+disponibles sur un projet photo **comme** sur un projet vidéo (le modèle d'objets est
+commun — [02-PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md)). Dès qu'un projet photo reçoit une
+**durée** (audio, éléments animés), une timeline apparaît — l'habillage reste le même.
+
+L'export suit la nature du projet :
+
+- **Image fixe** → JPEG / PNG (aucune durée, aucun audio).
+- **Photo animée / sonore** → clip vidéo MP4 (durée + audio + animations).
+  → [09-EXPORT-ENGINE](./09-EXPORT-ENGINE.md), [22-AUDIO-ENGINE](./22-AUDIO-ENGINE.md).
 
 ## Concepts
 

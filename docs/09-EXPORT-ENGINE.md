@@ -82,9 +82,15 @@ editor.on("export:failed",    (err: Error) => {});
 - [ADR-0010](./ADR/0010-preview-export-pipeline-split.md) — pipeline export distinct de la preview.
 - [ADR-0002](./ADR/0002-export-ffmpeg-fork-native-fallback.md) — FFmpeg fork + fallback natif.
 
+> **Exécution non-bloquante** : en usage Studio, `render()` n'est pas appelé
+> directement par l'UI — il est **enveloppé dans un job d'arrière-plan** qui rend un
+> snapshot du projet pendant que l'utilisateur continue d'éditer (vignette + %).
+> → [27-BACKGROUND-JOBS](./27-BACKGROUND-JOBS.md).
+
 ## Cross-refs
 
 - [04-RENDERER](./04-RENDERER.md) — l'Export Renderer dans le Renderer.
+- [27-BACKGROUND-JOBS](./27-BACKGROUND-JOBS.md) — export en job d'arrière-plan.
 - [22-AUDIO-ENGINE](./22-AUDIO-ENGINE.md) — mixage audio.
 - [07-LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md) — tiers 4K / H.265.
 - [15-NATIVE-CONFIG-PLUGINS](./15-NATIVE-CONFIG-PLUGINS.md) — fallbacks natifs.

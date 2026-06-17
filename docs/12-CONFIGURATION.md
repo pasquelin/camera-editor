@@ -48,11 +48,44 @@ interface MediaStudioConfig {
   filters?: FilterDefinition[];    // catalogue de filtres custom
   musicLibrary?: MusicSource;      // bibliothèque audio custom
 
+  // Parcours du composant Studio (étapes, toggle, aperçu) — entièrement paramétrable
+  flow?: StudioFlowConfig;         // → 26-STUDIO-FLOW
+
+  // Export en arrière-plan (jobs)
+  jobs?: JobsConfig;               // → 27-BACKGROUND-JOBS
+
   // Valeurs par défaut des paramètres runtime (entièrement ajustables par l'intégrateur)
   limits?: Partial<EditorLimits>;
 }
 
 await MediaStudio.initialize(config: MediaStudioConfig): Promise<void>;
+```
+
+### Niveau 0 bis — Parcours Studio (étapes & aperçu)
+
+Le composant `<MediaStudio />` orchestre **lui-même** les étapes ; on les paramètre
+sans toucher à la navigation de l'app hôte ([26-STUDIO-FLOW](./26-STUDIO-FLOW.md)).
+**Tout est optionnel**, y compris l'aperçu :
+
+```ts
+interface StudioFlowConfig {
+  steps?: ("capture" | "edit" | "preview")[];  // défaut ["capture","edit","preview"]
+  initialStep?: "capture" | "edit" | "preview"; // défaut "capture"
+  initialMode?: "photo" | "video";              // défaut "video"
+  allowModeToggle?: boolean;                     // toggle Photo/Vidéo, défaut true
+  preview?: boolean;                             // afficher l'aperçu, défaut true
+  autoExportOnFinish?: boolean;                  // export auto en fin d'édition, défaut true
+}
+
+interface JobsConfig {
+  maxConcurrent?: number;    // jobs d'export simultanés, défaut 1
+  showThumbnail?: boolean;   // vignette de progression, défaut true
+}
+
+// Exemples
+<MediaStudio flow={{ preview: false }} />                       // pas d'aperçu
+<MediaStudio flow={{ steps: ["edit", "preview"] }} media={…} /> // démarre sur l'éditeur
+<MediaStudio flow={{ steps: ["capture"] }} />                   // caméra seule
 ```
 
 ### Niveau 0 — Capability flags

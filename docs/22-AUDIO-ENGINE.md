@@ -10,6 +10,10 @@ du Runtime ([03-RUNTIME](./03-RUNTIME.md)) comme référence absolue : il ne pos
 pas sa propre horloge et se resynchronise si l'horloge native (AVPlayer / ExoPlayer)
 dérive au-delà d'un seuil.
 
+L'audio s'applique **aussi bien à un projet vidéo qu'à un projet photo** : ajouter une
+piste audio donne une **durée** à une photo, qui devient un clip animé/sonore exportable
+en MP4 ([17-PHOTO-EDITOR](./17-PHOTO-EDITOR.md), [09-EXPORT-ENGINE](./09-EXPORT-ENGINE.md)).
+
 ## Concepts
 
 ### Sources audio prises en charge
