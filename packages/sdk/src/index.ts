@@ -22,3 +22,9 @@ export * from "@media-studio/background-jobs";
 export * from "@media-studio/export-engine";
 export * from "@media-studio/security";
 export * from "@media-studio/asset-manager";
+export * from "@media-studio/transition-engine";
+export * from "@media-studio/audio-engine";
+
+// Contrôleurs d'édition headless
+export * from "@media-studio/video-editor";
+export * from "@media-studio/photo-editor";

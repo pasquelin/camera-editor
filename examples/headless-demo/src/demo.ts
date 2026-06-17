@@ -12,6 +12,10 @@ import {
   createFilterCatalog,
   createRuntime,
   createExportRenderer,
+  createVideoEditor,
+  createTransitionCatalog,
+  buildAudioMixPlan,
+  gainAt,
   type ExportConfig,
   type NativeEncoder,
 } from "@media-studio/sdk";
@@ -97,6 +101,52 @@ async function main(): Promise<void> {
   rt.tick(1500);
   log("runtime currentTime après tick 1500ms", rt.getCurrentTime());
   log("runtime state", rt.getState());
+
+  // 5b) Contrôleur vidéo headless (ergonomie sur les commandes video.*)
+  const video = createVideoEditor(core);
+  video.setSpeed("v1", 2);
+  video.mute("v1", true);
+  log("via contrôleur — v1 speed/muted", {
+    speed: (core.project.get().tracks.video[0] as { speed: number }).speed,
+    muted: (core.project.get().tracks.video[0] as { muted: boolean }).muted,
+  });
+
+  // 5c) Transition entre deux clips
+  core.execute("video.create", {
+    id: "vb",
+    object: { source: "b.mp4", startTime: 5000, endTime: 8000 },
+  });
+  core.execute("transition.set", {
+    trackId: "track-1",
+    clipAId: "v1",
+    clipBId: "vb",
+    transition: { type: "fade", durationMs: 500, easing: "easeInOut" },
+  });
+  log(
+    "transitions",
+    core.project
+      .get()
+      .tracks.transitions.map((t) => `${t.clipAId}→${t.clipBId}:${t.transition.type}`),
+  );
+  log("catalogue transitions", createTransitionCatalog().list().length);
+
+  // 5d) Audio + plan de mixage headless
+  core.execute("audio.create", {
+    id: "bg",
+    object: {
+      source: "music.mp3",
+      role: "background",
+      startTime: 0,
+      endTime: 8000,
+      volume: 1,
+      fadeIn: 1000,
+      fadeOut: 1000,
+    },
+  });
+  const mix = buildAudioMixPlan(core.project.get());
+  log("plan de mix (pistes)", mix.length);
+  log("gain @500ms (fade-in)", Number(gainAt(mix[0]!, 500).toFixed(2)));
+  log("gain @4000ms (plein)", gainAt(mix[0]!, 4000));
 
   // 6) Export en arrière-plan (non-bloquant)
   const config: ExportConfig = {
