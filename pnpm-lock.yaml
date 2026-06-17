@@ -123,6 +123,52 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9
 
+  packages/sdk:
+    dependencies:
+      '@media-studio/asset-manager':
+        specifier: workspace:*
+        version: link:../asset-manager
+      '@media-studio/background-jobs':
+        specifier: workspace:*
+        version: link:../background-jobs
+      '@media-studio/core':
+        specifier: workspace:*
+        version: link:../core
+      '@media-studio/export-engine':
+        specifier: workspace:*
+        version: link:../export-engine
+      '@media-studio/filter-engine':
+        specifier: workspace:*
+        version: link:../filter-engine
+      '@media-studio/licensing':
+        specifier: workspace:*
+        version: link:../licensing
+      '@media-studio/runtime':
+        specifier: workspace:*
+        version: link:../runtime
+      '@media-studio/security':
+        specifier: workspace:*
+        version: link:../security
+      '@media-studio/sticker-engine':
+        specifier: workspace:*
+        version: link:../sticker-engine
+      '@media-studio/text-engine':
+        specifier: workspace:*
+        version: link:../text-engine
+      '@media-studio/timeline':
+        specifier: workspace:*
+        version: link:../timeline
+    devDependencies:
+      tsup:
+        specifier: ^8.3.5
+        version: 8.5.1(postcss@8.5.15)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9
+
   packages/security:
     devDependencies:
       '@media-studio/core':
