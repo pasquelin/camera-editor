@@ -14,9 +14,9 @@ Les documents sont numérotés par couche de profondeur, du *pourquoi* vers le *
 | 00 | [VISION](./00-VISION.md) | Mission, positionnement, principes, non-goals V1 | ✅ stable |
 | 01 | [ARCHITECTURE](./01-ARCHITECTURE.md) | Couches, règles de dépendances, flux de données | ✅ stable |
 | 02 | [PROJECT-SCHEMA](./02-PROJECT-SCHEMA.md) | Modèle de données, types d'objets, migrations | ✅ stable |
-| 03 | [RUNTIME](./03-RUNTIME.md) | Orchestrateur play/pause/seek, clock partagée | 🟡 passe 2 |
-| 04 | [RENDERER](./04-RENDERER.md) | Preview temps réel + Export offline | 🟡 passe 2 |
-| 05 | [TIMELINE](./05-TIMELINE.md) | Tracks, gestes, snap, synchro clock | 🟡 passe 2 |
+| 03 | [RUNTIME](./03-RUNTIME.md) | Orchestrateur play/pause/seek, clock partagée | ✅ stable |
+| 04 | [RENDERER](./04-RENDERER.md) | Preview temps réel + Export offline | ✅ stable |
+| 05 | [TIMELINE](./05-TIMELINE.md) | Tracks, gestes, snap, synchro clock | ✅ stable |
 | 06 | [PLUGIN-API](./06-PLUGIN-API.md) | Système de plugins, points d'extension | 🟡 passe 3 |
 | 07 | [LICENSE-SYSTEM](./07-LICENSE-SYSTEM.md) | Plans, validation, expiration gracieuse | 🟡 passe 3 |
 | 08 | [ASSET-MANAGER](./08-ASSET-MANAGER.md) | Assets, cache, ResourcePacks | 🟡 passe 3 |
